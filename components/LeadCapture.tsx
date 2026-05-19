@@ -199,7 +199,7 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
 
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-base px-6 py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-slate-200 mt-2"
+            className="w-full flex items-center justify-center gap-2 bg-[#1a1f5e] hover:bg-[#04121f] text-white font-bold text-base px-6 py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-slate-200 mt-2"
           >
             Unlock My Full Result <ChevronRight size={18} />
           </button>

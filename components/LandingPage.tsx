@@ -1,69 +1,111 @@
 "use client";
 
-import { Shield, Clock, CheckCircle, ChevronRight, Sparkles } from "lucide-react";
+import { Shield, CheckCircle, ChevronRight, Sparkles, Zap, TrendingUp, Star } from "lucide-react";
 import Logo from "./Logo";
+import DecorativeBg from "./DecorativeBg";
+import HeroIllustration from "./HeroIllustration";
 
 export default function LandingPage({ onStart }: { onStart: () => void }) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="relative min-h-screen">
+      <DecorativeBg />
+
       {/* Nav */}
-      <nav className="border-b border-slate-100 px-4 py-3">
+      <nav className="relative border-b border-slate-100/80 backdrop-blur-sm bg-white/70 px-4 py-3 z-10">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <Logo size="md" />
           <a
             href="https://sigmaschool.co"
-            className="text-xs text-slate-500 hover:text-slate-900 transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-500 hover:text-[#1a1f5e] transition-colors font-medium"
           >
-            sigmaschool.co
+            sigmaschool.co →
           </a>
         </div>
       </nav>
 
-      <div className="max-w-lg mx-auto px-4 py-10 animate-fade-in">
+      <div className="relative max-w-lg mx-auto px-4 py-10 animate-fade-in">
         {/* Badge */}
-        <div className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-          <Sparkles size={12} />
+        <div className="inline-flex items-center gap-1.5 bg-white border border-indigo-100 text-[#1a1f5e] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 shadow-sm">
+          <Sparkles size={12} className="text-amber-500" />
           Free · 2 minutes · No fluff
         </div>
 
         {/* Hero */}
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-[1.05] tracking-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.05] tracking-tight mb-4 text-slate-900">
           Is Your Job
           <br />
-          Safe From AI?
+          <span className="text-shimmer">Safe From AI?</span>
         </h1>
         <p className="text-lg text-slate-600 mb-3 leading-relaxed">
           12 honest questions. A real score. And — most importantly — a clear answer to{" "}
           <span className="font-semibold text-slate-900">what to actually do about it.</span>
         </p>
-        <p className="text-sm text-slate-500 mb-8">
+        <p className="text-sm text-slate-500 mb-6">
           No doom. No hype. Built for real working people in every field.
         </p>
 
+        {/* Hero illustration */}
+        <HeroIllustration />
+
         <button
           onClick={onStart}
-          className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-base px-6 py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-slate-200"
+          className="group relative w-full flex items-center justify-center gap-2 bg-[#1a1f5e] hover:bg-[#04121f] text-white font-bold text-base px-6 py-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-indigo-200/60 overflow-hidden"
         >
-          Start the Checklist <ChevronRight size={18} />
+          <span className="relative z-10 flex items-center gap-2">
+            Start the Checklist
+            <ChevronRight size={18} className="transition-transform group-hover:translate-x-1" />
+          </span>
+          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
         </button>
 
-        <p className="text-center text-xs text-slate-400 mt-3">No sign-up needed to start</p>
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          <div className="flex -space-x-1">
+            {["bg-rose-300", "bg-amber-300", "bg-emerald-300", "bg-indigo-300"].map((c, i) => (
+              <div key={i} className={`w-5 h-5 rounded-full border-2 border-white ${c}`} />
+            ))}
+          </div>
+          <p className="text-xs text-slate-500 ml-1">No sign-up needed to start</p>
+        </div>
 
-        {/* Honest framing */}
-        <div className="mt-10 bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 rounded-2xl p-5">
-          <p className="text-sm font-bold text-slate-900 mb-2">
-            Real talk before you start:
+        {/* Stats strip */}
+        <div className="mt-10 grid grid-cols-3 gap-3">
+          {[
+            { icon: <Zap size={16} className="text-amber-500" />, value: "12", label: "Questions" },
+            { icon: <TrendingUp size={16} className="text-emerald-500" />, value: "2 min", label: "To finish" },
+            { icon: <Star size={16} className="text-indigo-500" />, value: "Free", label: "Forever" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="bg-white/80 backdrop-blur border border-slate-200 rounded-2xl p-3 text-center"
+            >
+              <div className="flex items-center justify-center mb-1">{s.icon}</div>
+              <p className="text-base font-extrabold text-slate-900">{s.value}</p>
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider">{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Real-talk callout */}
+        <div className="mt-10 relative bg-gradient-to-br from-[#04121f] to-[#1a1f5e] text-white rounded-3xl p-6 overflow-hidden shadow-xl shadow-indigo-100">
+          <div
+            className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-amber-400/20 blur-2xl"
+            aria-hidden
+          />
+          <p className="text-xs font-bold uppercase tracking-widest text-amber-300 mb-2 relative">
+            Real talk before you start
           </p>
-          <p className="text-sm text-slate-700 leading-relaxed">
+          <p className="text-sm text-slate-100 leading-relaxed relative">
             AI isn&apos;t going to replace your job overnight. But it&apos;s already replacing{" "}
-            <span className="font-semibold">tasks</span> — and the basic version of almost every
-            role just got cheaper. This checklist helps you see exactly which parts of{" "}
-            <span className="italic">your</span> work are exposed, so you know what to build next.
+            <span className="font-bold text-white">tasks</span> — and the basic version of almost
+            every role just got cheaper. This checklist shows exactly which parts of{" "}
+            <span className="italic">your</span> work are exposed.
           </p>
         </div>
 
         {/* Who it's for */}
-        <div className="mt-8">
+        <div className="mt-10">
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
             Built for every kind of worker
           </p>
@@ -88,7 +130,7 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
             ].map((role) => (
               <span
                 key={role}
-                className="bg-white border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full"
+                className="bg-white/80 backdrop-blur border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full hover:border-indigo-300 hover:text-[#1a1f5e] transition-colors"
               >
                 {role}
               </span>
@@ -106,22 +148,33 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
               {
                 title: "Your honest AI exposure score",
                 detail: "Low → Very High, with a breakdown of why",
+                color: "from-emerald-400 to-emerald-600",
               },
               {
                 title: "The 3 answers driving your score",
                 detail: "See exactly which parts of your work are most exposed",
+                color: "from-amber-400 to-amber-600",
               },
               {
                 title: "3 AI tools to try this week",
                 detail: "Specific tools picked for your field — not generic advice",
+                color: "from-indigo-400 to-indigo-600",
               },
               {
                 title: "A 30-day micro-plan",
                 detail: "Four small weekly actions to actually move forward",
+                color: "from-violet-400 to-violet-600",
               },
-            ].map((item) => (
-              <div key={item.title} className="flex items-start gap-3">
-                <CheckCircle size={18} className="text-indigo-500 mt-0.5 shrink-0" />
+            ].map((item, i) => (
+              <div
+                key={item.title}
+                className="group flex items-start gap-3 p-3 rounded-2xl hover:bg-white/60 hover:backdrop-blur transition-all"
+              >
+                <div
+                  className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0 group-hover:scale-110 transition-transform`}
+                >
+                  {i + 1}
+                </div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{item.title}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{item.detail}</p>
@@ -132,7 +185,8 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
         </div>
 
         {/* Why it matters */}
-        <div className="mt-10 border-l-4 border-amber-400 pl-4 py-1">
+        <div className="mt-10 relative bg-white/80 backdrop-blur rounded-2xl border border-slate-200 p-5">
+          <div className="absolute top-0 left-5 w-8 h-1 bg-amber-400 rounded-b-full" aria-hidden />
           <p className="text-sm text-slate-700 leading-relaxed">
             Most career advice is still pretending it&apos;s 2019. The job market changed. Salaries are
             getting compressed. Entry-level work is shrinking. And &quot;just get a degree&quot; isn&apos;t the
@@ -155,7 +209,7 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
         </div>
 
         {/* Footer mark */}
-        <div className="mt-12 pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-12 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-400">
           <span>Made by</span>
           <Logo size="sm" />
         </div>

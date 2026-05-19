@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,15 +13,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Is Your Job Safe From AI? | Sigma School",
+  title: "Is Your Job Safe From AI? | Sigmaschool",
   description:
-    "Take this 2-minute checklist to see how exposed your current work is to AI, and what skills can help you stay valuable. Made for Malaysians.",
+    "Take this 2-minute checklist to see how exposed your current work is to AI, and what skills can make you harder to replace.",
+  icons: { icon: "/brand/favicon.png" },
   openGraph: {
     title: "Is Your Job Safe From AI?",
     description:
-      "Find out how exposed your job is to AI disruption. Free 2-minute checklist for Malaysians.",
-    siteName: "Sigma School",
+      "Find out how exposed your job is to AI disruption. A free 2-minute checklist by Sigmaschool.",
+    siteName: "Sigmaschool",
+    images: ["/brand/sigma-logo.png"],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1a1f5e",
 };
 
 export default function RootLayout({

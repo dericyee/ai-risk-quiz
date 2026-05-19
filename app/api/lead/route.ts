@@ -41,6 +41,57 @@ export async function POST(req: Request) {
   });
 
   // ─────────────────────────────────────────────────────────────
+  // AIRTABLE — send the lead to your Airtable base
+  // Set AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE in .env.local
+  // ─────────────────────────────────────────────────────────────
+  if (
+    process.env.AIRTABLE_API_KEY &&
+    process.env.AIRTABLE_BASE_ID &&
+    process.env.AIRTABLE_TABLE
+  ) {
+    try {
+      const airtableRes = await fetch(
+        `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${encodeURIComponent(
+          process.env.AIRTABLE_TABLE
+        )}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            records: [
+              {
+                fields: {
+                  Name: body.name,
+                  Email: body.email,
+                  WhatsApp: body.whatsapp || "",
+                  Role: body.role || "",
+                  Country: body.country || "",
+                  Income: body.income || "",
+                  "Pain Point": body.painPoint || "",
+                  Field: body.field,
+                  Score: body.score,
+                  "Risk Level": body.level,
+                  Consent: body.consent,
+                  "Submitted At": new Date().toISOString(),
+                },
+              },
+            ],
+          }),
+        }
+      );
+      if (!airtableRes.ok) {
+        const errText = await airtableRes.text();
+        console.error("[lead] airtable failed:", airtableRes.status, errText);
+      }
+    } catch (err) {
+      console.error("[lead] airtable error:", err);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
   // INTEGRATION POINTS — uncomment one and set env vars to go live
   // ─────────────────────────────────────────────────────────────
 
