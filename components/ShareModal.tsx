@@ -8,9 +8,10 @@ interface Props {
   onClose: () => void;
   score: number;
   level: string;
+  archetypeName?: string;
 }
 
-export default function ShareModal({ open, onClose, score, level }: Props) {
+export default function ShareModal({ open, onClose, score, level, archetypeName }: Props) {
   const [copied, setCopied] = useState(false);
   const [url, setUrl] = useState("");
 
@@ -26,7 +27,9 @@ export default function ShareModal({ open, onClose, score, level }: Props) {
 
   if (!open) return null;
 
-  const text = `I just took the AI Job Risk Checklist — my exposure is ${level} (${score}/36). What's yours?`;
+  const text = archetypeName
+    ? `I'm "${archetypeName}" on the AI Job Archetype quiz. ${level} exposure, ${score}/36. What's yours?`
+    : `I just took the AI Job Archetype quiz — my exposure is ${level} (${score}/36). What's yours?`;
   const encodedText = encodeURIComponent(text);
   const encodedUrl = encodeURIComponent(url);
 
