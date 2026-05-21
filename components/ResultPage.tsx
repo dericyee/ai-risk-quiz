@@ -11,6 +11,8 @@ import {
   Sparkles,
   Target,
   Zap,
+  BarChart3,
+  Clock,
 } from "lucide-react";
 import {
   type RiskLevel,
@@ -20,6 +22,8 @@ import {
   getTopDrivers,
 } from "@/lib/quiz-data";
 import { determineArchetype, calculateHalfLife } from "@/lib/archetypes";
+import { getComparisonForField, TIME_SAVED_TASKS } from "@/lib/insights";
+import { BarChart } from "./Chart";
 import type { LeadData } from "./QuizApp";
 import Logo from "./Logo";
 import ShareModal from "./ShareModal";
@@ -36,10 +40,17 @@ interface Props {
 }
 
 const TRAJECTORY_LABEL: Record<string, string> = {
-  endangered: "Endangered",
-  shifting: "Shifting",
-  rising: "Rising",
-  safe: "Stable",
+  shrinking: "Shrinking",
+  changing: "Changing",
+  growing: "Growing",
+  safe: "Safe",
+};
+
+const LEVEL_LABEL: Record<RiskLevel, string> = {
+  Low: "Low",
+  Medium: "Medium",
+  High: "High",
+  "Very High": "Very High",
 };
 
 export default function ResultPage({
@@ -61,6 +72,11 @@ export default function ResultPage({
     [field.id, answers, level]
   );
   const halfLife = useMemo(() => calculateHalfLife(score), [score]);
+  const comparison = useMemo(
+    () => getComparisonForField(field.id),
+    [field.id]
+  );
+  const userPctInField = comparison[0]?.value ?? 50;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-16">
@@ -78,7 +94,7 @@ export default function ResultPage({
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 py-6 animate-slide-up">
-        {/* ── ARCHETYPE HERO — the Purple Cow moment ── */}
+        {/* ── Archetype hero ── */}
         <ArchetypeCard
           archetype={archetype}
           score={score}
@@ -86,23 +102,23 @@ export default function ResultPage({
           halfLife={halfLife}
         />
 
-        {/* Verdict */}
+        {/* What it means */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 mt-4">
           <p className="text-xs font-mono uppercase tracking-[0.2em] text-slate-400 mb-3">
-            The Verdict
+            What this means
           </p>
           <p className="text-[15px] text-slate-800 leading-[1.65]">
             {archetype.verdict}
           </p>
         </div>
 
-        {/* Strengths vs Threats — two columns of stark contrast */}
-        <div className="grid grid-cols-2 gap-3 mt-3">
+        {/* Strengths vs threats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
           <div className="bg-white border border-slate-200 rounded-2xl p-5">
             <div className="flex items-center gap-1.5 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-500">
-                Your edge
+                Your strengths
               </p>
             </div>
             <ul className="space-y-2">
@@ -130,18 +146,32 @@ export default function ResultPage({
           </div>
         </div>
 
-        {/* Locked sections gate */}
+        {/* Comparison chart — value add #1 */}
+        <Section
+          label="How you compare"
+          sublabel={`AI doing parts of your job (vs other jobs, 2026)`}
+          icon={<BarChart3 size={14} />}
+        >
+          <BarChart data={comparison} accent={archetype.accent} />
+          <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+            About <span className="font-bold text-slate-900 font-mono">{userPctInField}%</span> of
+            tasks in jobs like yours can already be helped or done by AI in 2026.
+            Bars to compare are common jobs in the same range.
+          </p>
+        </Section>
+
+        {/* Gated sections */}
         {resultUnlocked ? (
           <>
-            {/* Top drivers — sharper, less ornamental */}
+            {/* Top drivers */}
             <Section
-              label="What gave you this archetype"
-              sublabel="Your three highest-scoring answers"
+              label="Why you got this type"
+              sublabel="The three things that made the biggest difference"
               icon={<Target size={14} />}
             >
               {drivers.length === 0 ? (
                 <p className="text-sm text-slate-500 italic">
-                  No specific drivers — your work pattern is well-balanced.
+                  No big stand-outs — your work is well-balanced.
                 </p>
               ) : (
                 <div className="divide-y divide-slate-100">
@@ -162,6 +192,19 @@ export default function ResultPage({
                   ))}
                 </div>
               )}
+            </Section>
+
+            {/* Time saved — value add #2 */}
+            <Section
+              label="Hours AI can save you"
+              sublabel="Common tasks people in your field do, and how much faster AI makes them"
+              icon={<Clock size={14} />}
+            >
+              <BarChart data={TIME_SAVED_TASKS} accent="#0ea5e9" />
+              <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+                These are average time savings reported by people using AI tools
+                at work. Even using one of these well can buy you back 3-5 hours a week.
+              </p>
             </Section>
 
             {/* AI tools */}
@@ -192,8 +235,8 @@ export default function ResultPage({
 
             {/* 30-day plan */}
             <Section
-              label="Your 30 days"
-              sublabel="Four moves. Concrete. Start Monday."
+              label="Your 30-day plan"
+              sublabel="Four small steps you can start this month"
               icon={<Calendar size={14} />}
             >
               <div className="space-y-4">
@@ -219,8 +262,8 @@ export default function ResultPage({
 
             {/* Skills card */}
             <Section
-              label="Where to invest"
-              sublabel="Skills that don't commoditise"
+              label="Where to focus"
+              sublabel="Skills that grow your value over time"
               icon={<Sparkles size={14} />}
             >
               <ul className="space-y-2">
@@ -242,8 +285,8 @@ export default function ResultPage({
                   <Zap size={14} className="text-amber-300" />
                 </div>
                 <p className="text-xs text-slate-200 leading-relaxed">
-                  <span className="font-semibold text-white">{leadData.name}</span> — your
-                  archetype card and 30-day plan will land in{" "}
+                  <span className="font-semibold text-white">{leadData.name}</span> — we&apos;ll
+                  send your full result and 30-day plan to{" "}
                   <span className="font-semibold text-white">{leadData.email}</span>.
                 </p>
               </div>
@@ -253,10 +296,10 @@ export default function ResultPage({
           <div className="bg-white border-2 border-dashed border-slate-200 rounded-2xl p-6 mt-3 text-center">
             <Lock size={18} className="text-slate-300 mx-auto mb-2" />
             <p className="text-sm font-semibold text-slate-700">
-              Your tools, drivers, and 30-day plan are locked
+              Tools, hours saved, and your 30-day plan are locked
             </p>
             <p className="text-xs text-slate-500 mt-1">
-              Enter your email above to unlock the rest.
+              Add your email above to unlock the rest.
             </p>
           </div>
         )}
@@ -288,11 +331,11 @@ export default function ResultPage({
           )}
         </div>
 
-        {/* Caveat — quieter, smaller */}
+        {/* Note */}
         <p className="text-[11px] text-slate-400 leading-relaxed mt-6 px-1">
-          This isn&apos;t a prediction. AI exposure ≠ job loss. It means parts of your work are
-          becoming cheaper, faster, or one-prompt tasks — and the people who learn to use AI
-          well get the next promotion.
+          This is a self-check, not a prediction. AI doing parts of your job
+          doesn&apos;t mean you&apos;ll lose it. It means some parts get faster
+          and cheaper — and the people who learn AI get the next raise.
         </p>
 
         {/* Footer actions */}
@@ -307,7 +350,7 @@ export default function ResultPage({
             onClick={() => setShareOpen(true)}
             className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 transition-colors py-1.5 text-xs font-medium"
           >
-            <Share2 size={12} /> Share archetype
+            <Share2 size={12} /> Share your type
           </button>
         </div>
       </div>
@@ -323,7 +366,7 @@ export default function ResultPage({
   );
 }
 
-// ── The archetype reveal card — Linear-inspired dark hero ──
+// ── Archetype reveal card — Linear-inspired dark hero ──
 function ArchetypeCard({
   archetype,
   score,
@@ -346,7 +389,6 @@ function ArchetypeCard({
         `,
       }}
     >
-      {/* Linear-style grid background */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
@@ -357,7 +399,6 @@ function ArchetypeCard({
         aria-hidden
       />
 
-      {/* Tiny accent dot top-left */}
       <div className="relative flex items-center gap-2 mb-8">
         <div
           className="w-1.5 h-1.5 rounded-full"
@@ -371,7 +412,6 @@ function ArchetypeCard({
         </p>
       </div>
 
-      {/* Archetype name — the big moment */}
       <div className="relative">
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[0.95] mb-3">
           {archetype.name}
@@ -381,7 +421,6 @@ function ArchetypeCard({
         </p>
       </div>
 
-      {/* Monogram — geometric symbol bottom-right area, large */}
       <div
         className="absolute right-6 top-6 sm:right-8 sm:top-8 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center font-extrabold text-xl sm:text-2xl tracking-tight"
         style={{
@@ -393,7 +432,7 @@ function ArchetypeCard({
         {archetype.monogram}
       </div>
 
-      {/* Stats grid — monospace, tight */}
+      {/* Stats grid */}
       <div className="relative grid grid-cols-3 gap-3 mt-6">
         <Stat
           label="Score"
@@ -405,8 +444,8 @@ function ArchetypeCard({
           }
         />
         <Stat
-          label="Exposure"
-          value={level}
+          label="AI Effect"
+          value={LEVEL_LABEL[level]}
           valueClassName={
             level === "Very High" || level === "High"
               ? "text-red-400"
@@ -416,44 +455,45 @@ function ArchetypeCard({
           }
         />
         <Stat
-          label="Trajectory"
+          label="Direction"
           value={TRAJECTORY_LABEL[archetype.trajectory]}
           valueClassName={
-            archetype.trajectory === "endangered"
+            archetype.trajectory === "shrinking"
               ? "text-red-400"
-              : archetype.trajectory === "shifting"
+              : archetype.trajectory === "changing"
               ? "text-amber-300"
-              : archetype.trajectory === "rising"
+              : archetype.trajectory === "growing"
               ? "text-violet-300"
               : "text-emerald-400"
           }
         />
       </div>
 
-      {/* Half-life — the signature, memorable number */}
+      {/* Countdown — signature stat */}
       <div className="relative mt-6 pt-6 border-t border-white/10">
         <div className="flex items-baseline justify-between flex-wrap gap-2">
           <div>
             <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-400 mb-2">
-              Estimated half-life
+              AI countdown
             </p>
             <p className="text-2xl sm:text-3xl font-extrabold">
               <span className="font-mono">{halfLife}</span>{" "}
               <span className="text-slate-400 text-lg font-semibold">months</span>
             </p>
             <p className="text-xs text-slate-500 mt-1.5 max-w-sm">
-              How long until ~60% of a role like yours can be done by AI, on current trends.
+              Roughly how long until AI can do most of a job like yours, based on
+              today&apos;s trends.
             </p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-400 mb-1">
-              Rarity
+              How rare
             </p>
             <p className="text-xs text-slate-300">
               <span className="font-mono text-base font-bold text-white">
                 {archetype.rarity}%
               </span>{" "}
-              of takers
+              of people get this
             </p>
           </div>
         </div>

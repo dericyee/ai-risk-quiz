@@ -53,7 +53,7 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             Your result is ready
           </p>
           <p className={`text-3xl font-extrabold ${result.color} mb-1`}>
-            AI Exposure: {level}
+            AI Effect: {level}
           </p>
           <div className="flex items-center justify-center gap-2 mt-3">
             <div className="h-2 bg-slate-200 rounded-full w-32 overflow-hidden">
@@ -74,12 +74,12 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
           <div className="flex items-center gap-2 mb-2">
             <Lock size={14} className="text-slate-400" />
             <p className="text-sm font-semibold text-slate-900">
-              Unlock your full breakdown
+              See your full result
             </p>
           </div>
           <p className="text-sm text-slate-500 pl-6">
-            We&apos;ll show you the 3 answers driving your score, AI tools to try for your field, and
-            your 30-day micro-plan.
+            We&apos;ll show you the 3 things that shaped your result, AI tools picked for your
+            job, and a simple 30-day plan.
           </p>
         </div>
 
@@ -201,7 +201,7 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             type="submit"
             className="w-full flex items-center justify-center gap-2 bg-[#1a1f5e] hover:bg-[#04121f] text-white font-bold text-base px-6 py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-slate-200 mt-2"
           >
-            Unlock My Full Result <ChevronRight size={18} />
+            Show me my full result <ChevronRight size={18} />
           </button>
 
           <button

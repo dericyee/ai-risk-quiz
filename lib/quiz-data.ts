@@ -364,6 +364,158 @@ export const FIELDS: FieldInfo[] = [
     ],
   },
   {
+    id: "trades",
+    label: "Trades (electrician, plumber, etc.)",
+    exposedTasks: [
+      "Job estimates and quotes",
+      "Scheduling and customer follow-ups",
+      "Inventory and parts tracking",
+    ],
+    saferSkills: [
+      "Hands-on problem solving on site",
+      "Customer trust and word-of-mouth",
+      "Working with new tools and tech in your trade",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Draft quotes, invoices, and customer replies in seconds" },
+      { name: "Jobber / Housecall Pro", useFor: "Scheduling, job tracking, and quotes" },
+      { name: "Google Lens / Claude", useFor: "Snap a photo to get instant info on parts or codes" },
+    ],
+  },
+  {
+    id: "driver",
+    label: "Driver / Delivery",
+    exposedTasks: [
+      "Route planning",
+      "Customer communication and updates",
+      "Logging trips and expenses",
+    ],
+    saferSkills: [
+      "Local knowledge and on-the-fly decisions",
+      "Customer service in person",
+      "Adapting to new platforms and tools",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Help with messages, taxes, and side-business ideas" },
+      { name: "Google Maps / Waze AI", useFor: "Smarter routes and time savings" },
+      { name: "Spending tracker apps", useFor: "Auto-categorise your fuel and expenses" },
+    ],
+  },
+  {
+    id: "caregiver",
+    label: "Caregiver / Childcare",
+    exposedTasks: [
+      "Scheduling and family communication",
+      "Logging meals, naps, or care notes",
+      "Researching activities and learning ideas",
+    ],
+    saferSkills: [
+      "Emotional support and presence",
+      "Patience and one-on-one care",
+      "Real-world judgment in tough moments",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Quick activity ideas, recipes, and family messages" },
+      { name: "Khanmigo / Khan Academy", useFor: "Help kids with homework, your way" },
+      { name: "Notion / Google Keep AI", useFor: "Track schedules, milestones, and notes" },
+    ],
+  },
+  {
+    id: "construction",
+    label: "Construction / Manual work",
+    exposedTasks: [
+      "Site reports and admin",
+      "Material ordering",
+      "Scheduling subcontractors",
+    ],
+    saferSkills: [
+      "Physical skill and safety on site",
+      "Leading a team in person",
+      "Knowing your trade better than any AI does",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Draft reports, emails, and material lists fast" },
+      { name: "Procore / Buildertrend", useFor: "Project tracking with AI features built in" },
+      { name: "Camera + Google Lens", useFor: "Identify parts or problems on the spot" },
+    ],
+  },
+  {
+    id: "artist",
+    label: "Artist / Musician / Creator",
+    exposedTasks: [
+      "Basic stock-style art or background music",
+      "Routine editing and resizing",
+      "Captions and social media posts",
+    ],
+    saferSkills: [
+      "Your unique style and voice",
+      "Live performance or events",
+      "Building a real audience that follows YOU",
+    ],
+    aiTools: [
+      { name: "Midjourney / Ideogram", useFor: "Concept art and moodboards in minutes" },
+      { name: "Suno / Udio", useFor: "Sketch song ideas and demos fast" },
+      { name: "CapCut / Descript", useFor: "Edit video and audio in a fraction of the time" },
+    ],
+  },
+  {
+    id: "parent",
+    label: "Stay-at-home parent",
+    exposedTasks: [
+      "Meal planning and shopping lists",
+      "Schedules and family admin",
+      "Homework help and learning prep",
+    ],
+    saferSkills: [
+      "Being present for your kids",
+      "Real-world life skills nobody can outsource",
+      "Building anything you want to start, with AI as a helper",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Meal plans, family schedules, homework explanations" },
+      { name: "Khanmigo", useFor: "A patient tutor for the kids" },
+      { name: "Canva AI", useFor: "Make printables, invites, and projects in minutes" },
+    ],
+  },
+  {
+    id: "retired",
+    label: "Retired",
+    exposedTasks: [
+      "Paperwork and admin (taxes, bills, forms)",
+      "Travel planning",
+      "Researching health, finance, or hobbies",
+    ],
+    saferSkills: [
+      "Lifetime experience nobody else has",
+      "Mentoring younger people",
+      "Choosing what to spend time on",
+    ],
+    aiTools: [
+      { name: "ChatGPT", useFor: "Help with forms, research, and writing letters" },
+      { name: "Perplexity", useFor: "Plain-English answers with sources" },
+      { name: "Google Translate AI", useFor: "Travel, recipes, and connecting with family" },
+    ],
+  },
+  {
+    id: "jobseeker",
+    label: "Looking for work",
+    exposedTasks: [
+      "Generic CVs and cover letters",
+      "Repetitive online applications",
+      "Standard interview prep",
+    ],
+    saferSkills: [
+      "Real projects and proof of work",
+      "Reaching out to humans directly",
+      "Using AI to apply smarter, not just more",
+    ],
+    aiTools: [
+      { name: "ChatGPT / Claude", useFor: "Tailor each application to the role in minutes" },
+      { name: "LinkedIn AI", useFor: "Profile, job search, and cold outreach" },
+      { name: "Teal / Huntr", useFor: "Track jobs and improve your CV with AI feedback" },
+    ],
+  },
+  {
     id: "other",
     label: "Other",
     exposedTasks: [
@@ -528,12 +680,12 @@ export interface RiskResult {
 export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
   Low: {
     level: "Low",
-    title: "Low Exposure",
+    title: "Low",
     shortSummary:
-      "Your work depends on things AI is genuinely bad at — physical presence, real judgment, or human trust. The core of your job is safer than most.",
+      "Your work needs things AI is bad at — being there in person, real judgment, and trust with people. The main part of your job is safer than most.",
     realTalk:
-      "Real talk: \"low exposure\" is not \"no exposure.\" The parts of your job you don't think about — emails, reports, planning, research — those will get done in 5 minutes instead of 5 hours. The people who learn to use AI here will get promoted past the ones who don't.\n\nYour edge: you're not on the front line of disruption, so you have more time to learn. Don't waste it.",
-    primaryCTA: { label: "Get the Beginner AI Skills Roadmap", href: "https://sigmaschool.co" },
+      "Low does not mean none. The parts of your job you don't think about much — emails, reports, planning, looking things up — those will get done in 5 minutes instead of 5 hours.\n\nThe people who learn to use AI for these parts get noticed. You have more time than most to pick it up. Don't waste it.",
+    primaryCTA: { label: "Get the Beginner AI Skills Guide", href: "https://sigmaschool.co" },
     secondaryCTA: { label: "Free Masterclass: AI for Your Career", href: "https://sigmaschool.co" },
     color: "text-emerald-700",
     bgColor: "bg-emerald-50",
@@ -543,13 +695,13 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
   },
   Medium: {
     level: "Medium",
-    title: "Medium Exposure",
+    title: "Medium",
     shortSummary:
-      "Real chunks of your job — writing, organising, reporting, replying — can already be done in a fraction of the time with AI. Your role isn't disappearing. The basic version of it is getting cheaper.",
+      "Big parts of your job — writing, organizing, reporting, replying — can already be done much faster with AI. Your job is not going away. The simple version of it is getting cheaper.",
     realTalk:
-      "Here's the thing — your job probably won't be replaced. Your tasks will. The person still doing those tasks manually in 2 years will look like the one still printing emails in 2010.\n\nThe move: stop being the person who does the task. Become the person who designs how the task gets done. That's a different — and more valuable — job.",
-    primaryCTA: { label: "Get the AI Software Developer Roadmap", href: "https://sigmaschool.co" },
-    secondaryCTA: { label: "Join the Free AI-Native Masterclass", href: "https://sigmaschool.co" },
+      "Your job probably won't be replaced. Some of your tasks will. The person still doing those tasks by hand in 2 years will look like the person still printing emails in 2010.\n\nThe move: stop being the one doing the task. Become the one deciding how the task gets done. That's a different job — and a more valuable one.",
+    primaryCTA: { label: "Get the AI Career Roadmap", href: "https://sigmaschool.co" },
+    secondaryCTA: { label: "Join the Free Masterclass", href: "https://sigmaschool.co" },
     color: "text-amber-700",
     bgColor: "bg-amber-50",
     borderColor: "border-amber-200",
@@ -558,12 +710,12 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
   },
   High: {
     level: "High",
-    title: "High Exposure",
+    title: "High",
     shortSummary:
-      "A big slice of your work is digital, repetitive, and easy to describe step-by-step. That's exactly the shape AI tools are getting really good at — and where employers will look first to do more with less.",
+      "A big chunk of your job is on a computer, repeats often, and can be written as steps. That's exactly the kind of work AI is now really good at — and where bosses will look first to do more with less.",
     realTalk:
-      "Look — this isn't a doom prediction. But the calculus is real: your employer is going to expect more output, with less budget for the basic stuff, faster. Wage pressure, fewer entry-level openings, and one person expected to do the work of three with AI.\n\nYour move isn't \"learn ChatGPT\" — that's table stakes now. Your move is to build something AI can't easily commoditise: technical thinking, automation, real projects you can point to. That's how you reprice your work upward instead of being repriced down.",
-    primaryCTA: { label: "Join the Free AI-Native Developer Masterclass", href: "https://sigmaschool.co" },
+      "This isn't doom. But the math is real: your boss will expect more from you, faster, with smaller teams.\n\n\"Learn ChatGPT\" isn't enough anymore. Build something AI can't easily copy — technical skills, automation, and real projects you can show. That's how your work becomes worth more, not less.",
+    primaryCTA: { label: "Join the Free AI Career Masterclass", href: "https://sigmaschool.co" },
     secondaryCTA: { label: "Get the Beginner Roadmap", href: "https://sigmaschool.co" },
     color: "text-orange-700",
     bgColor: "bg-orange-50",
@@ -573,11 +725,11 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
   },
   "Very High": {
     level: "Very High",
-    title: "Very High Exposure",
+    title: "Very High",
     shortSummary:
-      "Most of what you do is computer-based, repetitive, and follows steps. That's the exact profile AI is being pointed at right now — not as a future threat, but in tools already shipped.",
+      "Most of what you do is on a computer, repeats often, and follows clear steps. That's exactly what AI is pointed at right now — not in some future, but with tools that already exist.",
     realTalk:
-      "Direct version: if you wait 12 months, the gap between you and AI-native workers will be hard to close. The good news? Most people will wait. That's your edge — if you start now.\n\nDon't try to \"keep up\" with AI doing your current tasks. That's a losing race. Move up the stack: build skills where AI is your tool, not your competitor. Software thinking, automation, and real project-building are the clearest path right now.",
+      "The honest version: if you wait 12 months, the gap between you and people who use AI well will be hard to close. The good news? Most people will wait. That's your edge — if you start now.\n\nDon't try to race AI doing your old tasks. You'll lose. Move up: pick a skill where AI is your tool, not your rival. Building things with AI is the clearest path right now.",
     primaryCTA: { label: "Join the Free Masterclass — Start Now", href: "https://sigmaschool.co" },
     secondaryCTA: { label: "Apply to Sigma School", href: "https://sigmaschool.co" },
     color: "text-red-700",
@@ -596,28 +748,28 @@ export interface MicroAction {
 
 export const THIRTY_DAY_PLAN: Record<RiskLevel, MicroAction[]> = {
   Low: [
-    { week: "Week 1", title: "Pick one AI tool and use it 4 times", detail: "Claude or ChatGPT. For a real task at work, not a toy." },
-    { week: "Week 2", title: "Replace one manual workflow", detail: "Find one weekly task that takes >30 min. Cut it in half with AI." },
-    { week: "Week 3", title: "Learn one technical skill adjacent to your role", detail: "SQL, Python basics, no-code automation — pick one." },
-    { week: "Week 4", title: "Teach what you learned", detail: "Post a short LinkedIn write-up. Public learning compounds." },
+    { week: "Week 1", title: "Pick one AI tool and use it 4 times", detail: "Try ChatGPT or Claude. Use it for something real at work — not a toy task." },
+    { week: "Week 2", title: "Replace one slow task with AI", detail: "Find one task that takes you more than 30 minutes a week. Cut it in half." },
+    { week: "Week 3", title: "Learn one new skill", detail: "Pick one: simple coding, working with data, or using a tool like Zapier." },
+    { week: "Week 4", title: "Share what you learned", detail: "Post a short note on LinkedIn or tell a friend. Teaching helps you remember." },
   ],
   Medium: [
-    { week: "Week 1", title: "Audit your week", detail: "List every recurring task. Mark which ones could be 80% done by AI." },
-    { week: "Week 2", title: "Automate one of them end-to-end", detail: "Use Zapier, Claude, or a script. Save the time. Don't tell your boss yet." },
-    { week: "Week 3", title: "Build one public artifact", detail: "A small project, template, or guide that shows you can build with AI, not just use it." },
-    { week: "Week 4", title: "Talk to one person who already moved up", detail: "Coffee chat or LinkedIn DM. Ask what their week looks like now." },
+    { week: "Week 1", title: "List your weekly tasks", detail: "Write down everything you do in a normal week. Mark the ones AI could help with." },
+    { week: "Week 2", title: "Automate one of them", detail: "Use ChatGPT, Zapier, or a simple tool to do it for you. Save the time." },
+    { week: "Week 3", title: "Make something you can show", detail: "A small project, template, or guide. Something you can point at and say 'I made that.'" },
+    { week: "Week 4", title: "Talk to one person doing it well", detail: "A quick coffee or a message on LinkedIn. Ask how AI changed their week." },
   ],
   High: [
-    { week: "Week 1", title: "Be brutally honest about your tasks", detail: "Write down what you actually did last week. Highlight what AI could already do." },
-    { week: "Week 2", title: "Commit to learning one new stack", detail: "Software, data, or AI development. Pick one and start a real course or bootcamp track." },
-    { week: "Week 3", title: "Ship something small but real", detail: "A working app, automation, or analysis. Anything you can point at and say 'I built that.'" },
-    { week: "Week 4", title: "Apply or talk to a program", detail: "If you're serious, talk to admissions at a bootcamp. Even just to scope timelines." },
+    { week: "Week 1", title: "Be honest about your tasks", detail: "Write down what you did last week. Circle anything AI could already do." },
+    { week: "Week 2", title: "Start learning a real skill", detail: "Pick one: coding, data, or AI tools. Sign up for a real course — free or paid." },
+    { week: "Week 3", title: "Make one small real thing", detail: "An app, automation, or analysis. Something working. Even tiny counts." },
+    { week: "Week 4", title: "Look at a program", detail: "If you're serious, look at a course or bootcamp. Just to see what's there." },
   ],
   "Very High": [
-    { week: "Week 1", title: "Stop scrolling, start scoping", detail: "Block 1 hour a day this week. No exceptions. This is your runway." },
-    { week: "Week 2", title: "Join one masterclass or intro course", detail: "Move from \"thinking about it\" to \"in something.\" Free is fine — committed is the point." },
-    { week: "Week 3", title: "Build your first real project", detail: "Not a tutorial. Something you'd be proud to show someone. Even tiny counts." },
-    { week: "Week 4", title: "Decide your 6-month path", detail: "Career pivot or skill stack-up? Pick one. The biggest risk now is no decision." },
+    { week: "Week 1", title: "Block one hour a day", detail: "Same time every day. No phone. This is your hour to learn." },
+    { week: "Week 2", title: "Join one course or masterclass", detail: "Move from thinking about it to being in something. Free is fine — what matters is starting." },
+    { week: "Week 3", title: "Build your first real thing", detail: "Not a tutorial. Something you'd be proud to show a friend. Even tiny is fine." },
+    { week: "Week 4", title: "Pick your next 6 months", detail: "New career or grow your current one? Pick one. The biggest risk now is not deciding." },
   ],
 };
 
@@ -627,18 +779,18 @@ export interface DriverInsight {
 }
 
 export const DRIVER_INSIGHTS: Record<string, string> = {
-  q1: "Computer-based work is where AI is strongest today. The more your work lives on a screen, the more of it AI can do.",
-  q2: "Repetitive work is the lowest-hanging fruit for AI. Anything that looks the same every week is a candidate for automation.",
-  q3: "Writing is one of AI's strongest skills. The 'just write this email/report/post' part of your job is already done in seconds.",
-  q4: "Moving and organising information is where AI quietly eats hours of your week. Spreadsheets, CRMs, forms — all targets.",
-  q5: "If a task can be written as steps, it can usually be prompted as steps. SOP-heavy work is the most automatable kind.",
-  q6: "Low decision-making roles are most exposed because AI is great at execution, not judgment. The fewer calls you make, the more your work looks like a script.",
-  q7: "Heavy tool usage = heavy AI integration points. Most of these tools now have AI built in — you'll need to use them or fall behind.",
-  q8: "If your output can be checked against a template, AI can usually produce it against a template too — faster and cheaper.",
-  q9: "High-trust work is one of the safest moats. The less trust your role requires, the easier it is to swap in AI.",
-  q10: "Physical presence is the strongest moat AI doesn't have. The less physical your job, the more exposed it is by default.",
-  q11: "This is your own honest estimate. If you can already see 40%+ of your work going faster with AI, your employer can see it too.",
-  q12: "This isn't about exposure — it's about adaptation. Low AI fluency is a personal risk on top of role risk. It's also the easiest one to fix.",
+  q1: "AI is best at work on a screen. The more your job lives on a computer, the more of it AI can do.",
+  q2: "Tasks that repeat are the easiest for AI to take over. Anything that looks the same every week is at risk.",
+  q3: "Writing is one of AI's strongest skills. If your job is writing emails, reports, or posts — AI can do it in seconds.",
+  q4: "Moving info around (spreadsheets, forms, copying things into systems) is where AI quietly eats hours of your week.",
+  q5: "If you can write your job as steps, AI can be told to do those steps. Steps are easy to copy.",
+  q6: "Jobs with fewer decisions are easier for AI to do. The fewer calls you make on your own, the more your work looks like a script.",
+  q7: "Tools like Excel, Canva, and CRMs all have AI built in now. If you use them a lot, you'll feel AI fast.",
+  q8: "If your work can be checked against a template, AI can usually make it match that template too. Faster and cheaper.",
+  q9: "Trust is one of AI's weak spots. The less trust your job needs, the easier it is to swap in AI.",
+  q10: "Being there in person is something AI can't do. The less physical your job, the more open it is to AI.",
+  q11: "This is your own honest guess. If you can see lots of your work going faster with AI, your boss can see it too.",
+  q12: "This one is about you, not your job. Not using AI is a risk. The good news: it's the easiest one to fix.",
 };
 
 export function calculateRisk(answers: Record<string, number>): { score: number; level: RiskLevel } {

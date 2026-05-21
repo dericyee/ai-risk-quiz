@@ -14,11 +14,11 @@ export interface Archetype {
   threats: string[];
   // Rough % of takers who get this — used for "rarity" copy
   rarity: number;
-  // Accent color for the archetype card (Tailwind/CSS color)
+  // Accent color for the archetype card
   accent: string;
   accentSoft: string;
-  // What kind of mood — "endangered" | "shifting" | "rising" | "safe"
-  trajectory: "endangered" | "shifting" | "rising" | "safe";
+  // Direction the role is heading
+  trajectory: "shrinking" | "changing" | "growing" | "safe";
 }
 
 export const ARCHETYPES: Record<string, Archetype> = {
@@ -27,38 +27,46 @@ export const ARCHETYPES: Record<string, Archetype> = {
     name: "The Spreadsheet Sherpa",
     shortName: "Spreadsheet Sherpa",
     monogram: "SS",
-    tagline: "You keep the org's spreadsheet alive. AI just learned spreadsheets.",
+    tagline: "You live in spreadsheets all day. AI just learned spreadsheets.",
     verdict:
-      "Your work runs on cells, formulas, and the quiet heroism of cleaning up other people's data. The good news: you've already automated 100 things by hand. The bad: that work just became a one-prompt task.",
-    strengths: ["Data structure intuition", "Spotting messy inputs", "Cross-tab thinking"],
+      "Your day is full of numbers, tables, and tidying up other people's messy data. You're really good at this. But here's the truth: AI can now do most of this work in seconds. The skill that took you years to build is starting to feel cheap. The smart move is to learn how to use AI to do this stuff for you — and spend your time on harder things AI can't do.",
+    strengths: [
+      "Spotting messy data",
+      "Building tables that make sense",
+      "Cross-checking numbers nobody else catches",
+    ],
     threats: [
-      "ChatGPT writes your formulas faster than you do",
-      "Auto-categorisation kills the cleanup step",
-      "Your monthly report is now a paragraph",
+      "AI writes your formulas faster than you can",
+      "AI cleans data in seconds",
+      "Your monthly report is now one paragraph",
     ],
     rarity: 18,
     accent: "#f97316",
     accentSoft: "#fed7aa",
-    trajectory: "endangered",
+    trajectory: "shrinking",
   },
   inbox_diplomat: {
     id: "inbox_diplomat",
     name: "The Inbox Diplomat",
     shortName: "Inbox Diplomat",
     monogram: "ID",
-    tagline: "You write the polite version of what people meant to say. So does GPT.",
+    tagline: "You reply to emails and chats all day. So does AI now.",
     verdict:
-      "Your superpower is translating chaos into a calm, on-brand reply. AI has been trained on a billion polite emails. It's getting eerily good at sounding like you — but faster, at 3 AM, in 14 languages.",
-    strengths: ["Tone calibration", "De-escalation", "Reading between the lines"],
+      "Your skill is writing friendly, clear replies — emails, chats, customer messages, internal updates. AI has read billions of these and is getting really good at it. It can reply faster than you, in any language, at 3 AM. The good news: you still know what people actually need better than AI does. Use AI to write the first draft and make it sound like you.",
+    strengths: [
+      "Finding the right tone",
+      "Calming people down",
+      "Reading what people really mean",
+    ],
     threats: [
-      "Auto-replies that don't sound like auto-replies",
-      "AI summarising entire threads in two lines",
-      "Tier-1 tickets disappearing into bots",
+      "Auto-replies that don't feel like auto-replies",
+      "AI summing up long chats in two lines",
+      "Easy tickets disappearing into bots",
     ],
     rarity: 14,
     accent: "#ec4899",
     accentSoft: "#fbcfe8",
-    trajectory: "endangered",
+    trajectory: "shrinking",
   },
   template_wizard: {
     id: "template_wizard",
@@ -67,69 +75,85 @@ export const ARCHETYPES: Record<string, Archetype> = {
     monogram: "TW",
     tagline: "You make 30 versions of the same thing. AI does it in 30 seconds.",
     verdict:
-      "Captions, ad variants, banner resizes, blog drafts — you produce volume on demand. Volume is exactly what AI is built to make cheap. Your competitive edge is moving up the stack: taste, strategy, direction.",
-    strengths: ["Pace under deadline", "Format fluency", "Iteration stamina"],
+      "You make lots of stuff every day — captions, ads, designs, blog posts, resized banners. The skill is doing it fast and on-brand. AI can now make most of this in seconds. The way to stay ahead is to move up: be the one who decides what gets made and why, not just the one making it.",
+    strengths: [
+      "Working fast under deadlines",
+      "Knowing what looks good",
+      "Doing 10 versions when others give up at 2",
+    ],
     threats: [
-      "Midjourney does your moodboards",
-      "Claude drafts your blogs in 90 seconds",
-      "Clients expect 3x output for the same budget",
+      "AI making your moodboards in seconds",
+      "AI writing your blog drafts in 90 seconds",
+      "Clients wanting 3x the work for the same money",
     ],
     rarity: 13,
     accent: "#a855f7",
     accentSoft: "#e9d5ff",
-    trajectory: "endangered",
+    trajectory: "shrinking",
   },
   process_whisperer: {
     id: "process_whisperer",
     name: "The Process Whisperer",
     shortName: "Process Whisperer",
     monogram: "PW",
-    tagline: "You make chaos run on rails. AI loves rails.",
+    tagline: "You help things run smoothly. AI is great at following steps.",
     verdict:
-      "SOPs, workflows, ticket routing, coordination — you make organisations function. That's a real skill, but it's also a written-down skill. Anything that can be documented can be prompted.",
-    strengths: ["Systems thinking", "Calmness under chaos", "Documentation muscle"],
+      "You're the one who keeps the team running — setting up steps, fixing handoffs, making sure things don't fall through the cracks. That's a real skill. But it's also a written-down skill. Anything you can write into steps, AI can be told to do too. Your edge is the judgment calls that aren't in the SOP.",
+    strengths: [
+      "Seeing the whole system",
+      "Staying calm when things break",
+      "Writing down what others can't explain",
+    ],
     threats: [
-      "n8n / Zapier doing your handoffs",
-      "AI agents picking up routine ops",
-      "Headcount expected to shrink, output not",
+      "Tools like Zapier doing your handoffs",
+      "AI agents picking up routine tasks",
+      "Teams shrinking while output doesn't",
     ],
     rarity: 11,
     accent: "#f59e0b",
     accentSoft: "#fde68a",
-    trajectory: "shifting",
+    trajectory: "changing",
   },
   powerpoint_surgeon: {
     id: "powerpoint_surgeon",
     name: "The PowerPoint Surgeon",
     shortName: "PowerPoint Surgeon",
     monogram: "PS",
-    tagline: "You turn rough thoughts into clean slides. That's now a one-prompt task.",
+    tagline: "You turn ideas into clean slides. That's now a one-click job.",
     verdict:
-      "Decks, memos, briefs, frameworks — you make ideas legible. The synthesis itself is harder to automate than people think, but the slide assembly, the formatting, the executive summary? That's done.",
-    strengths: ["Structuring fuzzy ideas", "Narrative framing", "Executive presence"],
+      "Slides, decks, briefs, frameworks — you take rough ideas and make them clear. The thinking part is hard to copy. But the slide-making part? AI tools can do that in minutes. Your real value is the thinking, not the formatting. Lean into that.",
+    strengths: [
+      "Making fuzzy ideas clear",
+      "Telling a story with structure",
+      "Being calm in a boardroom",
+    ],
     threats: [
-      "Gamma / Tome generating decks from outlines",
-      "Claude writing your exec summary",
-      "Clients DIY-ing the framework you used to charge for",
+      "Tools like Gamma making decks from outlines",
+      "AI writing the exec summary you used to charge for",
+      "Clients doing it themselves with one prompt",
     ],
     rarity: 12,
     accent: "#0ea5e9",
     accentSoft: "#bae6fd",
-    trajectory: "shifting",
+    trajectory: "changing",
   },
   trust_broker: {
     id: "trust_broker",
     name: "The Trust Broker",
     shortName: "Trust Broker",
     monogram: "TB",
-    tagline: "You sell trust, not transactions. AI can't shake hands.",
+    tagline: "Your job is trust and people. AI can't shake hands.",
     verdict:
-      "Your value is in the room, on the call, across the table. AI can prep your meeting and write your follow-up — but it can't be the person clients choose to work with. Lean harder into the part of the job that's actually you.",
-    strengths: ["Reading the room", "Long-game relationships", "Closing what others can't"],
+      "Your job lives in the room — on the call, across the table, in the long lunch. AI can help you prep and follow up, but it can't be the person someone chooses to work with. The risk for you isn't being replaced. It's that the easier parts of your job get cheap, and the human parts get harder and more important.",
+    strengths: [
+      "Reading the room",
+      "Long-term relationships",
+      "Closing what others can't",
+    ],
     threats: [
-      "Junior versions of your role being absorbed by AI",
-      "Buyers researching you with AI before you even meet",
-      "Margins compressing on the routine deals",
+      "Junior versions of your job getting absorbed by AI",
+      "Buyers using AI to research you before you meet",
+      "Smaller deals shrinking in value",
     ],
     rarity: 10,
     accent: "#10b981",
@@ -141,14 +165,18 @@ export const ARCHETYPES: Record<string, Archetype> = {
     name: "The Field Captain",
     shortName: "Field Captain",
     monogram: "FC",
-    tagline: "Your job needs hands and presence. AI has neither.",
+    tagline: "Your job needs you there in person. AI can't be there.",
     verdict:
-      "Healthcare, retail, hospitality, field ops — your work happens in the physical world with real people in front of you. That's the strongest moat AI doesn't cross. Your risk isn't replacement. It's that your admin gets automated and the human work gets squeezed harder.",
-    strengths: ["Physical judgment", "Real-time decision making", "Human presence"],
+      "Healthcare, retail, food, trades, hands-on work — your job happens with real people in real places. That's the strongest moat AI doesn't cross. Your risk isn't getting replaced. It's that your paperwork gets faster, the human parts of the job get squeezed, and you're expected to do more in the same shift.",
+    strengths: [
+      "Being there in person",
+      "Real-time decisions",
+      "Your hands and your judgment",
+    ],
     threats: [
-      "Admin and scheduling getting consolidated",
-      "AI scribes shrinking documentation time",
-      "Expectation that you do more in the same shift",
+      "Paperwork and scheduling getting automated",
+      "AI cutting down your admin time (good and bad)",
+      "Bigger workload in the same hours",
     ],
     rarity: 9,
     accent: "#14b8a6",
@@ -160,53 +188,51 @@ export const ARCHETYPES: Record<string, Archetype> = {
     name: "The Builder",
     shortName: "Builder",
     monogram: "BU",
-    tagline: "You don't have a risk score. You're the reason others do.",
+    tagline: "You already use AI to do real work. You're not the worried one.",
     verdict:
-      "You already ship with AI. You write code, you automate workflows, you ship MVPs in weekends. The risk for you isn't displacement — it's complacency. The compounding advantage goes to whoever keeps building, not whoever shipped first.",
-    strengths: ["AI fluency", "Shipping reflex", "Tool-stack judgment"],
+      "You ship things with AI. You write code, automate workflows, or build products. The risk for you isn't losing your job. It's getting comfortable. The advantage goes to whoever keeps building — not whoever shipped first. Stay sharp, learn faster than others, and don't let the next wave catch you flat-footed.",
+    strengths: [
+      "Knowing the tools",
+      "Shipping fast",
+      "Picking the right stack",
+    ],
     threats: [
-      "Faster builders making your edge temporary",
-      "The 'wow' threshold rising every quarter",
-      "Distribution mattering more than craft now",
+      "Faster builders catching up",
+      "The bar for 'impressive' rising every quarter",
+      "Distribution mattering more than the build itself",
     ],
     rarity: 8,
     accent: "#6366f1",
     accentSoft: "#c7d2fe",
-    trajectory: "rising",
+    trajectory: "growing",
   },
   generalist: {
     id: "generalist",
     name: "The Quiet Generalist",
     shortName: "Quiet Generalist",
     monogram: "QG",
-    tagline: "You wear ten hats. Half of them are about to get lighter.",
+    tagline: "You do a bit of everything. AI will eat the bits one by one.",
     verdict:
-      "You're the person who does a bit of everything. That breadth is your edge — but it also means you have surface area exposed to AI in lots of small ways. The play is to pick two of your hats and go deep on the ones AI can't wear.",
-    strengths: ["Range", "Adaptability", "Connecting dots between teams"],
+      "You wear many hats. That's your edge — you can pick things up fast and fill gaps. But it also means you have lots of small tasks at risk of getting eaten by AI. The smart move is to pick two of your hats and go deep on the ones AI can't wear well.",
+    strengths: [
+      "Wide range",
+      "Picks up new things fast",
+      "Connects dots others miss",
+    ],
     threats: [
       "Lots of small tasks getting nibbled at once",
-      "Specialists with AI out-producing you",
-      "Being the most replaceable person in a small team",
+      "Specialists using AI to outdo you",
+      "Being the easiest person to replace on a small team",
     ],
     rarity: 5,
     accent: "#64748b",
     accentSoft: "#cbd5e1",
-    trajectory: "shifting",
+    trajectory: "changing",
   },
 };
 
 /**
  * Pick the archetype based on field, answer pattern, and risk level.
- * Logic, in order of precedence:
- *  1. Already AI-fluent (q12=0) + tool-heavy → Builder
- *  2. Physical-first work (q10 low) → Field Captain
- *  3. High trust + high decision-making + low overall → Trust Broker
- *  4. Strategic / manager / consultant fields → PowerPoint Surgeon
- *  5. Highest driver = writing-heavy (q3) → Inbox Diplomat
- *  6. Highest driver = info-moving (q4) → Spreadsheet Sherpa
- *  7. Design / marketing field + high SOP score → Template Wizard
- *  8. Highest driver = SOP-able (q5) → Process Whisperer
- *  9. Fallback → Quiet Generalist
  */
 export function determineArchetype(
   field: string,
@@ -220,8 +246,13 @@ export function determineArchetype(
     return ARCHETYPES.builder;
   }
 
-  // 2. Field Captain — physical work dominates
-  if (q("q10") <= 1 || ["healthcare", "retail", "engineering"].includes(field)) {
+  // 2. Field Captain — physical work dominates or field is physical
+  if (
+    q("q10") <= 1 ||
+    ["healthcare", "retail", "engineering", "trades", "driver", "caregiver", "construction"].includes(
+      field
+    )
+  ) {
     return ARCHETYPES.field_captain;
   }
 
@@ -254,7 +285,7 @@ export function determineArchetype(
 
   // 7. Template Wizard — design / marketing / writer / education
   if (
-    ["design", "marketing", "writer", "education"].includes(field) ||
+    ["design", "marketing", "writer", "education", "artist"].includes(field) ||
     (q("q5") >= 2 && q("q2") >= 2)
   ) {
     return ARCHETYPES.template_wizard;
@@ -270,14 +301,11 @@ export function determineArchetype(
 }
 
 /**
- * Calculate the "half-life" — months until roughly 60% of the role's
- * tasks could be done by AI, based on the user's risk score.
- * This is a believable shorthand, not a scientific prediction.
- * Score 0 → ~120 months. Score 36 → ~9 months.
+ * Calculate the "countdown" months — how long until roughly 60% of the role's
+ * tasks could be done by AI. Believable shorthand, not a science.
  */
 export function calculateHalfLife(score: number): number {
   const t = score / 36;
-  // Exponential decay from 120 months down to ~9 months
   const months = Math.round(120 * Math.pow(0.075, t));
   return Math.max(9, months);
 }

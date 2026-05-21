@@ -1,12 +1,19 @@
 "use client";
 
-import { ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronRight, ArrowRight, TrendingUp, TrendingDown } from "lucide-react";
 import Logo from "./Logo";
+import { AreaChart, BarChart } from "./Chart";
+import {
+  AI_ADOPTION_TREND,
+  KEY_STATS,
+  RISING_SKILLS,
+  FALLING_SKILLS,
+} from "@/lib/insights";
 
 export default function LandingPage({ onStart }: { onStart: () => void }) {
   return (
     <div className="relative min-h-screen bg-white">
-      {/* Subtle grid background — Linear-style */}
+      {/* Soft grid background */}
       <div
         className="fixed inset-0 -z-10 opacity-[0.4] pointer-events-none"
         style={{
@@ -33,50 +40,140 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
       </nav>
 
       <div className="max-w-2xl mx-auto px-4 py-12 animate-fade-in">
-        {/* Tiny indicator */}
+        {/* Live tag */}
         <div className="flex items-center gap-2 mb-6">
           <span className="relative flex w-2 h-2">
             <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-500" />
           </span>
           <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500">
-            Live · 2025
+            Live · 2026
           </p>
         </div>
 
         {/* Hero */}
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-[0.95] text-slate-900 mb-5">
-          Is your job
+          How will AI
           <br />
-          safe from AI?
+          change your work?
         </h1>
         <p className="text-lg text-slate-600 leading-relaxed mb-2 max-w-xl">
-          Answer 12 questions. Get your AI Archetype. Find out exactly which parts of your work
-          AI is about to eat — and what to build instead.
+          Take this 2-minute quiz. Find out which parts of your work AI is doing now —
+          and what you can do about it.
         </p>
         <p className="text-sm text-slate-400 mb-8">
-          Free. Two minutes. No corporate hedging.
+          For anyone with a job. Free. No sign-up to start.
         </p>
 
         <button
           onClick={onStart}
           className="group relative inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white font-semibold text-[15px] px-6 py-3.5 rounded-full transition-all active:scale-[0.98]"
         >
-          Find my archetype
+          Start the quiz
           <ArrowRight
             size={16}
             className="transition-transform group-hover:translate-x-0.5"
           />
         </button>
 
-        {/* Archetype teaser strip — the Purple Cow tease */}
-        <div className="mt-16">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+        {/* Key stats strip */}
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {KEY_STATS.map((s) => (
+            <div
+              key={s.label}
+              className="bg-white border border-slate-200 rounded-2xl p-4"
+            >
+              <p className="text-2xl font-extrabold text-slate-900 font-mono tracking-tight">
+                {s.value}
+              </p>
+              <p className="text-[11px] text-slate-600 mt-1 leading-snug">
+                {s.label}
+              </p>
+              <p className="text-[9px] font-mono uppercase tracking-wider text-slate-400 mt-2">
+                {s.source}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Adoption chart */}
+        <section className="mt-14">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500">
-              One of these is you
+              What just happened
             </p>
           </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-1">
+            AI use at work, year by year
+          </h2>
+          <p className="text-sm text-slate-500 mb-6">
+            % of workers using AI tools at their job (weekly or more often).
+          </p>
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6">
+            <AreaChart data={AI_ADOPTION_TREND} accent="#1a1f5e" height={200} />
+            <p className="text-xs text-slate-500 mt-4 leading-relaxed">
+              In just six years, AI went from a side tool to part of how most people
+              work. The line is still going up. The question isn&apos;t{" "}
+              <span className="italic">if</span> it touches your job. It&apos;s how.
+            </p>
+          </div>
+        </section>
+
+        {/* Skills up / Skills down */}
+        <section className="mt-14">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500">
+              The job market right now
+            </p>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-6">
+            What&apos;s growing. What&apos;s shrinking.
+          </h2>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp size={14} className="text-emerald-600" />
+                <p className="text-xs font-semibold text-emerald-700">
+                  Skills going UP
+                </p>
+              </div>
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-4">
+                % more job listings, year over year
+              </p>
+              <BarChart data={RISING_SKILLS} accent="#059669" />
+            </div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingDown size={14} className="text-red-600" />
+                <p className="text-xs font-semibold text-red-700">
+                  Skills going DOWN
+                </p>
+              </div>
+              <p className="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-4">
+                % fewer job listings, year over year
+              </p>
+              <BarChart data={FALLING_SKILLS} accent="#dc2626" />
+            </div>
+          </div>
+        </section>
+
+        {/* Archetype teaser */}
+        <section className="mt-14">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+            <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500">
+              Find yours
+            </p>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+            There are 8 types. Which one are you?
+          </h2>
+          <p className="text-sm text-slate-500 mb-6">
+            Everyone falls into one. It&apos;s easier to remember than a number.
+          </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
@@ -109,45 +206,61 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Three things — terse */}
-        <div className="mt-16 space-y-1">
-          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500 mb-4">
-            What you get
-          </p>
-          {[
-            {
-              k: "01",
-              h: "Your archetype",
-              d: "One of eight. Named, not numbered. Designed to share.",
-            },
-            {
-              k: "02",
-              h: "Your half-life",
-              d: "How many months until AI can do 60% of your role's tasks.",
-            },
-            {
-              k: "03",
-              h: "Your 30-day plan",
-              d: "Four moves to make. Concrete. Starts Monday.",
-            },
-          ].map((row) => (
-            <div
-              key={row.k}
-              className="grid grid-cols-[auto_1fr] gap-4 sm:gap-6 py-4 border-b border-slate-100 last:border-0"
-            >
-              <span className="font-mono text-xs text-slate-400 pt-0.5">{row.k}</span>
-              <div>
-                <p className="text-[15px] font-bold text-slate-900 leading-tight">{row.h}</p>
-                <p className="text-sm text-slate-500 mt-0.5">{row.d}</p>
+        {/* What you get */}
+        <section className="mt-14">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+            <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500">
+              What you get
+            </p>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-6">
+            Real answers. Not scary headlines.
+          </h2>
+
+          <div className="space-y-1">
+            {[
+              {
+                k: "01",
+                h: "Your worker type",
+                d: "One of eight. Friendly name. Easy to share with a friend.",
+              },
+              {
+                k: "02",
+                h: "Your AI countdown",
+                d: "Roughly how long until AI can do most of a job like yours.",
+              },
+              {
+                k: "03",
+                h: "How you compare",
+                d: "See how your work stacks up against other jobs in 2026.",
+              },
+              {
+                k: "04",
+                h: "A 30-day plan",
+                d: "Four small steps you can start this month.",
+              },
+            ].map((row) => (
+              <div
+                key={row.k}
+                className="grid grid-cols-[auto_1fr] gap-4 sm:gap-6 py-4 border-b border-slate-100 last:border-0"
+              >
+                <span className="font-mono text-xs text-slate-400 pt-0.5">{row.k}</span>
+                <div>
+                  <p className="text-[15px] font-bold text-slate-900 leading-tight">
+                    {row.h}
+                  </p>
+                  <p className="text-sm text-slate-500 mt-0.5">{row.d}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Confidence statement — replaces the "real talk" callout */}
-        <div className="mt-14 bg-slate-900 rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        {/* Honest framing */}
+        <section className="mt-14 bg-slate-900 rounded-2xl p-6 sm:p-8 relative overflow-hidden">
           <div
             className="absolute inset-0 opacity-[0.05] pointer-events-none"
             style={{
@@ -157,44 +270,21 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
             }}
           />
           <p className="relative text-base sm:text-lg text-white leading-relaxed font-medium">
-            AI isn&apos;t going to replace your job overnight.
+            AI is not going to take your whole job tomorrow.
             <br />
             <span className="text-slate-400">
-              It&apos;s already replacing your{" "}
-              <span className="italic text-white">tasks</span>. The basic version of almost
-              every role just got cheaper. This quiz shows you which parts.
+              But it is doing parts of it right now — the simple parts, the boring
+              parts. This quiz shows you which ones, and what to do about it.
             </span>
           </p>
-        </div>
-
-        {/* Stats — tight, designed */}
-        <div className="mt-10 grid grid-cols-3 gap-4 sm:gap-6 py-6 border-y border-slate-200">
-          <div>
-            <p className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">12</p>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 mt-1">
-              Questions
-            </p>
-          </div>
-          <div>
-            <p className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">2:00</p>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 mt-1">
-              Minutes
-            </p>
-          </div>
-          <div>
-            <p className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900">8</p>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400 mt-1">
-              Archetypes
-            </p>
-          </div>
-        </div>
+        </section>
 
         {/* Final CTA */}
         <div className="mt-12 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <p className="text-lg font-bold text-slate-900">Ready?</p>
             <p className="text-sm text-slate-500">
-              Two minutes. One archetype. Real answers.
+              Two minutes. One worker type. Real answers.
             </p>
           </div>
           <button
@@ -209,10 +299,11 @@ export default function LandingPage({ onStart }: { onStart: () => void }) {
           </button>
         </div>
 
-        {/* Disclaimer — quieter */}
+        {/* Disclaimer */}
         <p className="text-[11px] text-slate-400 leading-relaxed mt-12">
-          This is a self-assessment, not a prediction. AI exposure ≠ job loss. We help you see
-          which parts of your work are most exposed so you can act early instead of late.
+          This is a self-check, not a prediction. AI affecting your job doesn&apos;t
+          mean you&apos;ll lose it. Use this to see which parts of your work might
+          change — so you can plan ahead instead of getting surprised.
         </p>
 
         {/* Footer */}
