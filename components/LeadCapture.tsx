@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronRight, Lock } from "lucide-react";
-import { INCOME_RANGES, PAIN_POINTS, COUNTRIES, type RiskLevel, RISK_RESULTS } from "@/lib/quiz-data";
+import { INCOME_RANGES, PAIN_POINTS, type RiskLevel, RISK_RESULTS } from "@/lib/quiz-data";
 import type { LeadData } from "./QuizApp";
 
 interface Props {
@@ -81,7 +81,11 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     // Combine country code + digits into the single Phone string Airtable expects.
     const digitsOnly = phoneDigits.replace(/\D/g, "");
     const combinedPhone = digitsOnly ? `${countryCode} ${digitsOnly}` : "";
-    onSubmit({ ...form, whatsapp: combinedPhone });
+    // Derive country from the country-code dropdown selection
+    // so we don't have to ask twice.
+    const derivedCountry =
+      COUNTRY_CODES.find((c) => c.code === countryCode)?.label ?? "";
+    onSubmit({ ...form, whatsapp: combinedPhone, country: derivedCountry });
   };
 
   return (
@@ -198,37 +202,20 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Country <span className="text-slate-400 font-normal">(optional)</span>
-              </label>
-              <select
-                value={form.country}
-                onChange={(e) => setForm({ ...form, country: e.target.value })}
-                className="w-full px-3 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors text-slate-700"
-              >
-                <option value="">Select</option>
-                {COUNTRIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Income <span className="text-slate-400 font-normal">(optional)</span>
-              </label>
-              <select
-                value={form.income}
-                onChange={(e) => setForm({ ...form, income: e.target.value })}
-                className="w-full px-3 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors text-slate-700"
-              >
-                <option value="">Select</option>
-                {INCOME_RANGES.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Monthly income <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <select
+              value={form.income}
+              onChange={(e) => setForm({ ...form, income: e.target.value })}
+              className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors text-slate-700"
+            >
+              <option value="">Select</option>
+              {INCOME_RANGES.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
           </div>
 
           <div>

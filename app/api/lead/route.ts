@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  console.log("[lead]", {
+  console.log("[lead] received submission", {
     name: body.name,
     email: body.email,
     level: body.level,
@@ -40,103 +40,112 @@ export async function POST(req: Request) {
     whatsapp: body.whatsapp,
   });
 
+  // Track integration results so we can return them to the client for debugging.
+  const integrations: Record<string, unknown> = {};
+
   // ─────────────────────────────────────────────────────────────
-  // AIRTABLE — send the lead to your Airtable base
-  // Set AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE in .env.local
+  // AIRTABLE
   // ─────────────────────────────────────────────────────────────
-  if (
-    process.env.AIRTABLE_API_KEY &&
-    process.env.AIRTABLE_BASE_ID &&
-    process.env.AIRTABLE_TABLE
-  ) {
+  const hasKey = !!process.env.AIRTABLE_API_KEY;
+  const hasBase = !!process.env.AIRTABLE_BASE_ID;
+  const hasTable = !!process.env.AIRTABLE_TABLE;
+
+  console.log("[lead] airtable env check:", {
+    AIRTABLE_API_KEY: hasKey ? "set" : "missing",
+    AIRTABLE_BASE_ID: hasBase
+      ? process.env.AIRTABLE_BASE_ID?.startsWith("app")
+        ? "set (valid format)"
+        : "set (⚠ does not start with 'app' — likely wrong)"
+      : "missing",
+    AIRTABLE_TABLE: hasTable ? `set ("${process.env.AIRTABLE_TABLE}")` : "missing",
+  });
+
+  if (hasKey && hasBase && hasTable) {
+    const baseId = process.env.AIRTABLE_BASE_ID!;
+    const table = process.env.AIRTABLE_TABLE!;
+    const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(table)}`;
+
+    const fields = {
+      Name: body.name,
+      Email: body.email,
+      Phone: body.whatsapp || "",
+      Role: body.role || "",
+      Country: body.country || "",
+      Income: body.income || "",
+      "Pain Point": body.painPoint || "",
+      Field: body.field,
+      Score: body.score,
+      "Risk Level": body.level,
+      Consent: body.consent,
+      "Submitted At": new Date().toISOString(),
+    };
+
+    console.log("[lead] airtable POST →", url);
+    console.log("[lead] airtable fields →", fields);
+
     try {
-      const airtableRes = await fetch(
-        `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${encodeURIComponent(
-          process.env.AIRTABLE_TABLE
-        )}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            records: [
-              {
-                fields: {
-                  Name: body.name,
-                  Email: body.email,
-                  Phone: body.whatsapp || "",
-                  Role: body.role || "",
-                  Country: body.country || "",
-                  Income: body.income || "",
-                  "Pain Point": body.painPoint || "",
-                  Field: body.field,
-                  Score: body.score,
-                  "Risk Level": body.level,
-                  Consent: body.consent,
-                  "Submitted At": new Date().toISOString(),
-                },
-              },
-            ],
-          }),
-        }
-      );
+      const airtableRes = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          records: [{ fields }],
+          // typecast=true tells Airtable to accept new single-select values etc.
+          // rather than rejecting if the option doesn't already exist.
+          typecast: true,
+        }),
+      });
+
+      const responseText = await airtableRes.text();
       if (!airtableRes.ok) {
-        const errText = await airtableRes.text();
-        console.error("[lead] airtable failed:", airtableRes.status, errText);
+        console.error(
+          "[lead] airtable FAILED",
+          airtableRes.status,
+          airtableRes.statusText,
+          responseText
+        );
+        integrations.airtable = {
+          ok: false,
+          status: airtableRes.status,
+          error: responseText,
+        };
+      } else {
+        console.log("[lead] airtable OK", airtableRes.status);
+        integrations.airtable = { ok: true, status: airtableRes.status };
       }
     } catch (err) {
-      console.error("[lead] airtable error:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[lead] airtable threw:", msg);
+      integrations.airtable = { ok: false, error: msg };
     }
+  } else {
+    integrations.airtable = {
+      ok: false,
+      error: "Missing one or more env vars (see server logs)",
+    };
   }
 
   // ─────────────────────────────────────────────────────────────
-  // INTEGRATION POINTS — uncomment one and set env vars to go live
+  // Generic webhook (Zapier / Make / n8n / your backend) — optional
   // ─────────────────────────────────────────────────────────────
-
-  // OPTION 1 — Resend (recommended for transactional email)
-  // 1. npm install resend
-  // 2. Set RESEND_API_KEY in .env.local
-  // 3. Uncomment below:
-  //
-  // const { Resend } = await import("resend");
-  // const resend = new Resend(process.env.RESEND_API_KEY);
-  // await resend.emails.send({
-  //   from: "Sigma School <hello@sigmaschool.co>",
-  //   to: body.email,
-  //   subject: `Your AI Exposure Result: ${body.level}`,
-  //   html: `<p>Hi ${body.name},</p><p>Your AI exposure is <strong>${body.level}</strong> (${body.score}/36).</p>...`,
-  // });
-
-  // OPTION 2 — ConvertKit / Kit
-  // Set KIT_API_KEY and KIT_FORM_ID in .env.local
-  //
-  // await fetch(`https://api.convertkit.com/v3/forms/${process.env.KIT_FORM_ID}/subscribe`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({
-  //     api_key: process.env.KIT_API_KEY,
-  //     email: body.email,
-  //     first_name: body.name,
-  //     fields: { ai_exposure_level: body.level, ai_exposure_score: body.score },
-  //   }),
-  // });
-
-  // OPTION 3 — Generic webhook (Zapier, Make, n8n, your own backend)
-  // Set LEAD_WEBHOOK_URL in .env.local
-  //
   if (process.env.LEAD_WEBHOOK_URL) {
     try {
-      await fetch(process.env.LEAD_WEBHOOK_URL, {
+      const webhookRes = await fetch(process.env.LEAD_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      integrations.webhook = { ok: webhookRes.ok, status: webhookRes.status };
     } catch (err) {
-      console.error("[lead] webhook failed:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[lead] webhook failed:", msg);
+      integrations.webhook = { ok: false, error: msg };
     }
   }
 
-  return NextResponse.json({ ok: true });
+  // Always return 200 (we don't want to block the user's result page)
+  // but include integration results so we can debug from DevTools.
+  return NextResponse.json({ ok: true, integrations });
 }

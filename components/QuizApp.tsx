@@ -74,9 +74,10 @@ export default function QuizApp() {
       setResultUnlocked(true);
       setScreen("result");
 
-      // Fire-and-forget — we don't block the user on the network call
+      // Fire-and-forget — we don't block the user on the network call,
+      // but we log the response so submission issues are visible in DevTools.
       try {
-        await fetch("/api/lead", {
+        const res = await fetch("/api/lead", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -87,8 +88,14 @@ export default function QuizApp() {
             answers,
           }),
         });
+        const json = await res.json().catch(() => null);
+        if (!res.ok || json?.integrations?.airtable?.ok === false) {
+          console.warn("[lead] submission issue:", json);
+        } else {
+          console.log("[lead] submitted:", json);
+        }
       } catch (err) {
-        console.error("Failed to submit lead:", err);
+        console.error("[lead] network error:", err);
       }
     },
     [selectedField, score, level, answers]
