@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Copy, Check } from "lucide-react";
+import { X, Copy, Check, Download } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -9,10 +9,19 @@ interface Props {
   score: number;
   level: string;
   archetypeName?: string;
+  archetypeId?: string;
 }
 
-export default function ShareModal({ open, onClose, score, level, archetypeName }: Props) {
+export default function ShareModal({
+  open,
+  onClose,
+  score,
+  level,
+  archetypeName,
+  archetypeId,
+}: Props) {
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [url, setUrl] = useState("");
 
   useEffect(() => {
@@ -22,16 +31,24 @@ export default function ShareModal({ open, onClose, score, level, archetypeName 
   }, []);
 
   useEffect(() => {
-    if (!open) setCopied(false);
+    if (!open) {
+      setCopied(false);
+      setDownloading(false);
+    }
   }, [open]);
 
   if (!open) return null;
 
   const text = archetypeName
-    ? `I'm "${archetypeName}" on the AI Job Archetype quiz. ${level} exposure, ${score}/36. What's yours?`
-    : `I just took the AI Job Archetype quiz — my exposure is ${level} (${score}/36). What's yours?`;
+    ? `I'm "${archetypeName}" on the AI Job quiz. ${level} effect, ${score}/36. What's yours?`
+    : `I just took the AI Job quiz — my AI effect is ${level} (${score}/36). What's yours?`;
   const encodedText = encodeURIComponent(text);
   const encodedUrl = encodeURIComponent(url);
+
+  // Build the share-card image URL
+  const cardUrl = archetypeId
+    ? `/api/og?a=${encodeURIComponent(archetypeId)}&s=${score}&l=${encodeURIComponent(level)}`
+    : null;
 
   const links = [
     {
@@ -66,7 +83,6 @@ export default function ShareModal({ open, onClose, score, level, archetypeName 
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback
       const ta = document.createElement("textarea");
       ta.value = `${text} ${url}`;
       document.body.appendChild(ta);
@@ -78,13 +94,34 @@ export default function ShareModal({ open, onClose, score, level, archetypeName 
     }
   };
 
+  const handleDownload = async () => {
+    if (!cardUrl) return;
+    setDownloading(true);
+    try {
+      const res = await fetch(cardUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `${(archetypeName ?? "my-archetype").replace(/\s+/g, "-").toLowerCase()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-5 animate-slide-up"
+        className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-5 animate-slide-up max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -98,9 +135,29 @@ export default function ShareModal({ open, onClose, score, level, archetypeName 
           </button>
         </div>
 
-        <p className="text-sm text-slate-500 mb-4">
-          {text}
-        </p>
+        {/* Card preview */}
+        {cardUrl && (
+          <div className="mb-4">
+            <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={cardUrl}
+                alt="Your archetype card"
+                className="w-full h-auto block"
+              />
+            </div>
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="mt-2 w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-700 disabled:bg-slate-400 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition-colors active:scale-[0.98]"
+            >
+              <Download size={14} />
+              {downloading ? "Saving…" : "Download card"}
+            </button>
+          </div>
+        )}
+
+        <p className="text-sm text-slate-500 mb-3 leading-relaxed">{text}</p>
 
         <div className="grid grid-cols-2 gap-2 mb-3">
           {links.map((link) => (

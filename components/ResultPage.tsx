@@ -361,6 +361,7 @@ export default function ResultPage({
         score={score}
         level={level}
         archetypeName={archetype.shortName}
+        archetypeId={archetype.id}
       />
     </div>
   );
