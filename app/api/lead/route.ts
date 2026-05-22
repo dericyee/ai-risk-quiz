@@ -66,7 +66,7 @@ export async function POST(req: Request) {
                 fields: {
                   Name: body.name,
                   Email: body.email,
-                  WhatsApp: body.whatsapp || "",
+                  Phone: body.whatsapp || "",
                   Role: body.role || "",
                   Country: body.country || "",
                   Income: body.income || "",

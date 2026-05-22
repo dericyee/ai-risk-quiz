@@ -31,6 +31,16 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     if (!form.name.trim()) e.name = "Please enter your name";
     if (!form.email.trim() || !form.email.includes("@")) e.email = "Please enter a valid email";
     if (!form.consent) e.consent = "Please agree to continue";
+    // Phone is optional, but if filled, must start with country code (+)
+    const phone = form.whatsapp.trim();
+    if (phone) {
+      const digits = phone.replace(/\D/g, "");
+      if (!phone.startsWith("+")) {
+        e.whatsapp = "Please include your country code (e.g. +60 for Malaysia)";
+      } else if (digits.length < 8 || digits.length > 15) {
+        e.whatsapp = "That doesn't look like a complete phone number";
+      }
+    }
     return e;
   };
 
@@ -114,11 +124,29 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             </label>
             <input
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               placeholder="+60 12-345 6789"
               value={form.whatsapp}
-              onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors"
+              onChange={(e) => {
+                setForm({ ...form, whatsapp: e.target.value });
+                if (errors.whatsapp) setErrors({ ...errors, whatsapp: undefined });
+              }}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors ${
+                errors.whatsapp
+                  ? "border-red-300 focus:border-red-400"
+                  : "border-slate-200 focus:border-indigo-400"
+              }`}
             />
+            {errors.whatsapp ? (
+              <p className="text-red-500 text-xs mt-1">{errors.whatsapp}</p>
+            ) : (
+              <p className="text-slate-400 text-xs mt-1">
+                Start with your country code — e.g. <span className="font-mono">+60</span> (Malaysia),{" "}
+                <span className="font-mono">+65</span> (Singapore),{" "}
+                <span className="font-mono">+1</span> (US/CA).
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
