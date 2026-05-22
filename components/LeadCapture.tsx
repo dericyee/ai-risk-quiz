@@ -12,6 +12,33 @@ interface Props {
   onSkip: () => void;
 }
 
+// Common country dial codes — SEA-first since Sigmaschool's home base is MY,
+// then key English-speaking + global markets.
+const COUNTRY_CODES: { code: string; label: string }[] = [
+  { code: "+60", label: "Malaysia" },
+  { code: "+65", label: "Singapore" },
+  { code: "+62", label: "Indonesia" },
+  { code: "+66", label: "Thailand" },
+  { code: "+63", label: "Philippines" },
+  { code: "+84", label: "Vietnam" },
+  { code: "+91", label: "India" },
+  { code: "+1", label: "US / Canada" },
+  { code: "+44", label: "UK" },
+  { code: "+61", label: "Australia" },
+  { code: "+64", label: "New Zealand" },
+  { code: "+49", label: "Germany" },
+  { code: "+33", label: "France" },
+  { code: "+34", label: "Spain" },
+  { code: "+39", label: "Italy" },
+  { code: "+81", label: "Japan" },
+  { code: "+82", label: "South Korea" },
+  { code: "+86", label: "China" },
+  { code: "+852", label: "Hong Kong" },
+  { code: "+886", label: "Taiwan" },
+  { code: "+971", label: "UAE" },
+  { code: "+966", label: "Saudi Arabia" },
+];
+
 export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
   const result = RISK_RESULTS[level];
   const [form, setForm] = useState<LeadData>({
@@ -24,6 +51,9 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     painPoint: "",
     consent: false,
   });
+  // Split phone into code + digits in the UI; combined as `${code} ${digits}` on submit.
+  const [countryCode, setCountryCode] = useState("+60");
+  const [phoneDigits, setPhoneDigits] = useState("");
   const [errors, setErrors] = useState<Partial<Record<keyof LeadData, string>>>({});
 
   const validate = () => {
@@ -31,13 +61,10 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     if (!form.name.trim()) e.name = "Please enter your name";
     if (!form.email.trim() || !form.email.includes("@")) e.email = "Please enter a valid email";
     if (!form.consent) e.consent = "Please agree to continue";
-    // Phone is optional, but if filled, must start with country code (+)
-    const phone = form.whatsapp.trim();
-    if (phone) {
-      const digits = phone.replace(/\D/g, "");
-      if (!phone.startsWith("+")) {
-        e.whatsapp = "Please include your country code (e.g. +60 for Malaysia)";
-      } else if (digits.length < 8 || digits.length > 15) {
+    // Phone is optional, but if a number is entered it must be a valid length.
+    const digitsOnly = phoneDigits.replace(/\D/g, "");
+    if (phoneDigits.trim()) {
+      if (digitsOnly.length < 6 || digitsOnly.length > 14) {
         e.whatsapp = "That doesn't look like a complete phone number";
       }
     }
@@ -51,7 +78,10 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
       setErrors(errs);
       return;
     }
-    onSubmit(form);
+    // Combine country code + digits into the single Phone string Airtable expects.
+    const digitsOnly = phoneDigits.replace(/\D/g, "");
+    const combinedPhone = digitsOnly ? `${countryCode} ${digitsOnly}` : "";
+    onSubmit({ ...form, whatsapp: combinedPhone });
   };
 
   return (
@@ -122,29 +152,48 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             <label className="block text-sm font-medium text-slate-700 mb-1">
               WhatsApp / phone <span className="text-slate-400 font-normal">(optional)</span>
             </label>
-            <input
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="+60 12-345 6789"
-              value={form.whatsapp}
-              onChange={(e) => {
-                setForm({ ...form, whatsapp: e.target.value });
-                if (errors.whatsapp) setErrors({ ...errors, whatsapp: undefined });
-              }}
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors ${
-                errors.whatsapp
-                  ? "border-red-300 focus:border-red-400"
-                  : "border-slate-200 focus:border-indigo-400"
-              }`}
-            />
+            <div className="flex gap-2">
+              <select
+                aria-label="Country code"
+                value={countryCode}
+                onChange={(e) => {
+                  setCountryCode(e.target.value);
+                  if (errors.whatsapp) setErrors({ ...errors, whatsapp: undefined });
+                }}
+                className={`shrink-0 w-[7.5rem] px-3 py-3 rounded-xl border-2 bg-white text-sm font-mono focus:outline-none transition-colors ${
+                  errors.whatsapp
+                    ? "border-red-300 focus:border-red-400"
+                    : "border-slate-200 focus:border-indigo-400"
+                }`}
+              >
+                {COUNTRY_CODES.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} {c.label}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel-national"
+                placeholder="12 345 6789"
+                value={phoneDigits}
+                onChange={(e) => {
+                  setPhoneDigits(e.target.value);
+                  if (errors.whatsapp) setErrors({ ...errors, whatsapp: undefined });
+                }}
+                className={`flex-1 min-w-0 px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors ${
+                  errors.whatsapp
+                    ? "border-red-300 focus:border-red-400"
+                    : "border-slate-200 focus:border-indigo-400"
+                }`}
+              />
+            </div>
             {errors.whatsapp ? (
               <p className="text-red-500 text-xs mt-1">{errors.whatsapp}</p>
             ) : (
               <p className="text-slate-400 text-xs mt-1">
-                Start with your country code — e.g. <span className="font-mono">+60</span> (Malaysia),{" "}
-                <span className="font-mono">+65</span> (Singapore),{" "}
-                <span className="font-mono">+1</span> (US/CA).
+                Pick your country code, then your number — no need to repeat the code.
               </p>
             )}
           </div>
