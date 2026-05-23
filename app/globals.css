@@ -26,6 +26,22 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Tailwind preflight removes the default pointer cursor on buttons.
+   Re-add it for all interactive elements so the hand shows up everywhere. */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+select:not(:disabled),
+summary,
+a[href],
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
