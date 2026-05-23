@@ -134,21 +134,31 @@ export async function POST(req: Request) {
   // Table name overridable via AIRTABLE_FREEBIES_TABLE.
   // ─────────────────────────────────────────────────────────────
   if (hasKey && hasBase) {
-    // Accept either env var name to be forgiving.
-    const freebiesTable =
+    // Accept either env var name and trim defensively in case Vercel
+    // env-var input picked up a trailing space or newline.
+    const freebiesTableRaw =
       process.env.AIRTABLE_FREEBIES_TABLE_NAME ||
       process.env.AIRTABLE_FREEBIES_TABLE ||
-      "Freebies Signup";
-    const baseId = process.env.AIRTABLE_BASE_ID!;
+      "Freebies Signups";
+    const freebiesTable = freebiesTableRaw.trim();
+
+    console.log("[lead] freebies env →", {
+      AIRTABLE_FREEBIES_TABLE_NAME: process.env.AIRTABLE_FREEBIES_TABLE_NAME ?? "(unset)",
+      AIRTABLE_FREEBIES_TABLE: process.env.AIRTABLE_FREEBIES_TABLE ?? "(unset)",
+      resolved: freebiesTable,
+      resolvedLength: freebiesTable.length,
+    });
+
+    const baseId = (process.env.AIRTABLE_BASE_ID || "").trim();
     const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(freebiesTable)}`;
 
     // Split "Deric Yee" → first="Deric", last="Yee"
     // "Mary Jane Smith" → first="Mary", last="Jane Smith"
     // Single word → first=word, last=""
-    const trimmed = body.name.trim();
-    const firstSpace = trimmed.indexOf(" ");
-    const firstName = firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace);
-    const lastName = firstSpace === -1 ? "" : trimmed.slice(firstSpace + 1).trim();
+    const trimmedName = body.name.trim();
+    const firstSpace = trimmedName.indexOf(" ");
+    const firstName = firstSpace === -1 ? trimmedName : trimmedName.slice(0, firstSpace);
+    const lastName = firstSpace === -1 ? "" : trimmedName.slice(firstSpace + 1).trim();
 
     const freebiesFields = {
       "First Name": firstName,
@@ -181,10 +191,23 @@ export async function POST(req: Request) {
           res.statusText,
           responseText
         );
+        // 403 + INVALID_PERMISSIONS_OR_MODEL_NOT_FOUND has two common causes:
+        // (a) the PAT is scoped to specific tables and Freebies isn't one, OR
+        // (b) the table name doesn't match exactly (case / spacing).
+        let hint: string | undefined;
+        if (res.status === 403) {
+          hint =
+            "Either your PAT doesn't include this table in its scope " +
+            "(open the token at airtable.com/create/tokens and give it " +
+            `access to the whole base, not specific tables), or the table ` +
+            `name "${freebiesTable}" doesn't match exactly. Try using the ` +
+            "table ID (tbl...) instead of the name to rule out spelling.";
+        }
         integrations.freebies = {
           ok: false,
           status: res.status,
           error: responseText,
+          ...(hint ? { hint } : {}),
         };
       } else {
         console.log("[lead] freebies OK", res.status);
