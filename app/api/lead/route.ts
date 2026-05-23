@@ -128,6 +128,72 @@ export async function POST(req: Request) {
   }
 
   // ─────────────────────────────────────────────────────────────
+  // AIRTABLE — Freebies Signup (master lead list, same base)
+  // Mirrors every quiz submission with normalised first/last name
+  // and a "Source" tag so you can segment leads by entry point.
+  // Table name overridable via AIRTABLE_FREEBIES_TABLE.
+  // ─────────────────────────────────────────────────────────────
+  if (hasKey && hasBase) {
+    const freebiesTable = process.env.AIRTABLE_FREEBIES_TABLE || "Freebies Signup";
+    const baseId = process.env.AIRTABLE_BASE_ID!;
+    const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(freebiesTable)}`;
+
+    // Split "Deric Yee" → first="Deric", last="Yee"
+    // "Mary Jane Smith" → first="Mary", last="Jane Smith"
+    // Single word → first=word, last=""
+    const trimmed = body.name.trim();
+    const firstSpace = trimmed.indexOf(" ");
+    const firstName = firstSpace === -1 ? trimmed : trimmed.slice(0, firstSpace);
+    const lastName = firstSpace === -1 ? "" : trimmed.slice(firstSpace + 1).trim();
+
+    const freebiesFields = {
+      "First Name": firstName,
+      "Last Name": lastName,
+      Email: body.email,
+      Phone: body.whatsapp || "",
+      Source: "ai-risk-quiz",
+    };
+
+    console.log("[lead] freebies POST →", url);
+    console.log("[lead] freebies fields →", freebiesFields);
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          records: [{ fields: freebiesFields }],
+          typecast: true,
+        }),
+      });
+      const responseText = await res.text();
+      if (!res.ok) {
+        console.error(
+          "[lead] freebies FAILED",
+          res.status,
+          res.statusText,
+          responseText
+        );
+        integrations.freebies = {
+          ok: false,
+          status: res.status,
+          error: responseText,
+        };
+      } else {
+        console.log("[lead] freebies OK", res.status);
+        integrations.freebies = { ok: true, status: res.status };
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[lead] freebies threw:", msg);
+      integrations.freebies = { ok: false, error: msg };
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
   // Generic webhook (Zapier / Make / n8n / your backend) — optional
   // ─────────────────────────────────────────────────────────────
   if (process.env.LEAD_WEBHOOK_URL) {
