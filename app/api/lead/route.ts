@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (!body.email || !body.email.includes("@") || !body.name || !body.consent) {
+  if (!body.email || !body.email.includes("@") || !body.name) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -76,11 +76,8 @@ export async function POST(req: Request) {
       Field: body.field,
       Score: body.score,
       "Risk Level": body.level,
-      // Sent as "Yes"/"No" text so it works with Single line text,
-      // Long text, or Single select columns. If your Consent column
-      // is a Checkbox, change this to `body.consent` (boolean).
-      Consent: body.consent ? "Yes" : "No",
-      "Submitted At": new Date().toISOString(),
+      // "Submitted At" is a computed field (Created Time) in Airtable,
+      // so we don't send it — Airtable populates it on insert.
     };
 
     console.log("[lead] airtable POST →", url);

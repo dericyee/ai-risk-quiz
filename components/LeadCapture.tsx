@@ -60,7 +60,6 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     const e: Partial<Record<keyof LeadData, string>> = {};
     if (!form.name.trim()) e.name = "Please enter your name";
     if (!form.email.trim() || !form.email.includes("@")) e.email = "Please enter a valid email";
-    if (!form.consent) e.consent = "Please agree to continue";
     // Phone is optional, but if a number is entered it must be a valid length.
     const digitsOnly = phoneDigits.replace(/\D/g, "");
     if (phoneDigits.trim()) {
@@ -85,7 +84,13 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     // so we don't have to ask twice.
     const derivedCountry =
       COUNTRY_CODES.find((c) => c.code === countryCode)?.label ?? "";
-    onSubmit({ ...form, whatsapp: combinedPhone, country: derivedCountry });
+    // Clicking submit implies consent now that the checkbox is gone.
+    onSubmit({
+      ...form,
+      whatsapp: combinedPhone,
+      country: derivedCountry,
+      consent: true,
+    });
   };
 
   return (
@@ -247,26 +252,17 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
             </select>
           </div>
 
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.consent}
-              onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-              className="mt-0.5 w-4 h-4 rounded accent-indigo-600"
-            />
-            <span className="text-xs text-slate-500 leading-relaxed">
-              I agree to receive updates and resources from Sigma School. Unsubscribe anytime, no
-              hard feelings.
-            </span>
-          </label>
-          {errors.consent && <p className="text-red-500 text-xs -mt-2">{errors.consent}</p>}
-
           <button
             type="submit"
             className="w-full flex items-center justify-center gap-2 bg-[#1a1f5e] hover:bg-[#04121f] text-white font-bold text-base px-6 py-4 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-slate-200 mt-2"
           >
             Show me my full result <ChevronRight size={18} />
           </button>
+
+          <p className="text-[11px] text-slate-400 text-center leading-relaxed">
+            By continuing, you agree to get occasional updates from Sigma School.
+            Unsubscribe anytime.
+          </p>
 
           <button
             type="button"
