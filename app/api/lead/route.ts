@@ -134,7 +134,11 @@ export async function POST(req: Request) {
   // Table name overridable via AIRTABLE_FREEBIES_TABLE.
   // ─────────────────────────────────────────────────────────────
   if (hasKey && hasBase) {
-    const freebiesTable = process.env.AIRTABLE_FREEBIES_TABLE || "Freebies Signup";
+    // Accept either env var name to be forgiving.
+    const freebiesTable =
+      process.env.AIRTABLE_FREEBIES_TABLE_NAME ||
+      process.env.AIRTABLE_FREEBIES_TABLE ||
+      "Freebies Signup";
     const baseId = process.env.AIRTABLE_BASE_ID!;
     const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(freebiesTable)}`;
 
