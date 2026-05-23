@@ -260,7 +260,7 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
           </button>
 
           <p className="text-[11px] text-slate-400 text-center leading-relaxed">
-            By continuing, you agree to get occasional updates from Sigma School.
+            By continuing, you agree to get occasional updates from Sigmaschool.
             Unsubscribe anytime.
           </p>
 

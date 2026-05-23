@@ -685,8 +685,9 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
       "Your work needs things AI is bad at — being there in person, real judgment, and trust with people. The main part of your job is safer than most.",
     realTalk:
       "Low does not mean none. The parts of your job you don't think about much — emails, reports, planning, looking things up — those will get done in 5 minutes instead of 5 hours.\n\nThe people who learn to use AI for these parts get noticed. You have more time than most to pick it up. Don't waste it.",
-    primaryCTA: { label: "Get the Beginner AI Skills Guide", href: "https://sigmaschool.co" },
-    secondaryCTA: { label: "Free Masterclass: AI for Your Career", href: "https://sigmaschool.co" },
+    // Low risk → softer entry: roadmap first, programme as next step
+    primaryCTA: { label: "Get the AI Developer Roadmap", href: "https://sigmaschool.co/roadmap" },
+    secondaryCTA: { label: "Apply for the AI-Native Software Developer Programme", href: "https://sigmaschool.co" },
     color: "text-emerald-700",
     bgColor: "bg-emerald-50",
     borderColor: "border-emerald-200",
@@ -700,8 +701,9 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
       "Big parts of your job — writing, organizing, reporting, replying — can already be done much faster with AI. Your job is not going away. The simple version of it is getting cheaper.",
     realTalk:
       "Your job probably won't be replaced. Some of your tasks will. The person still doing those tasks by hand in 2 years will look like the person still printing emails in 2010.\n\nThe move: stop being the one doing the task. Become the one deciding how the task gets done. That's a different job — and a more valuable one.",
-    primaryCTA: { label: "Get the AI Career Roadmap", href: "https://sigmaschool.co" },
-    secondaryCTA: { label: "Join the Free Masterclass", href: "https://sigmaschool.co" },
+    // Medium → roadmap first to learn what's possible, then apply
+    primaryCTA: { label: "Get the AI Developer Roadmap", href: "https://sigmaschool.co/roadmap" },
+    secondaryCTA: { label: "Apply for the AI-Native Software Developer Programme", href: "https://sigmaschool.co" },
     color: "text-amber-700",
     bgColor: "bg-amber-50",
     borderColor: "border-amber-200",
@@ -715,8 +717,9 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
       "A big chunk of your job is on a computer, repeats often, and can be written as steps. That's exactly the kind of work AI is now really good at — and where bosses will look first to do more with less.",
     realTalk:
       "This isn't doom. But the math is real: your boss will expect more from you, faster, with smaller teams.\n\n\"Learn ChatGPT\" isn't enough anymore. Build something AI can't easily copy — technical skills, automation, and real projects you can show. That's how your work becomes worth more, not less.",
-    primaryCTA: { label: "Join the Free AI Career Masterclass", href: "https://sigmaschool.co" },
-    secondaryCTA: { label: "Get the Beginner Roadmap", href: "https://sigmaschool.co" },
+    // High → apply primary, roadmap as the lighter alternative
+    primaryCTA: { label: "Apply for the AI-Native Software Developer Programme", href: "https://sigmaschool.co" },
+    secondaryCTA: { label: "Get the Roadmap First", href: "https://sigmaschool.co/roadmap" },
     color: "text-orange-700",
     bgColor: "bg-orange-50",
     borderColor: "border-orange-200",
@@ -730,8 +733,9 @@ export const RISK_RESULTS: Record<RiskLevel, RiskResult> = {
       "Most of what you do is on a computer, repeats often, and follows clear steps. That's exactly what AI is pointed at right now — not in some future, but with tools that already exist.",
     realTalk:
       "The honest version: if you wait 12 months, the gap between you and people who use AI well will be hard to close. The good news? Most people will wait. That's your edge — if you start now.\n\nDon't try to race AI doing your old tasks. You'll lose. Move up: pick a skill where AI is your tool, not your rival. Building things with AI is the clearest path right now.",
-    primaryCTA: { label: "Join the Free Masterclass — Start Now", href: "https://sigmaschool.co" },
-    secondaryCTA: { label: "Apply to Sigma School", href: "https://sigmaschool.co" },
+    // Very high → apply now, roadmap as the lighter alternative
+    primaryCTA: { label: "Apply for the AI-Native Software Developer Programme", href: "https://sigmaschool.co" },
+    secondaryCTA: { label: "Get the Roadmap First", href: "https://sigmaschool.co/roadmap" },
     color: "text-red-700",
     bgColor: "bg-red-50",
     borderColor: "border-red-200",
