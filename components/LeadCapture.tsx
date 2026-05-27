@@ -60,13 +60,16 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
     const e: Partial<Record<keyof LeadData, string>> = {};
     if (!form.name.trim()) e.name = "Please enter your name";
     if (!form.email.trim() || !form.email.includes("@")) e.email = "Please enter a valid email";
-    // Phone is optional, but if a number is entered it must be a valid length.
+    // Phone required
     const digitsOnly = phoneDigits.replace(/\D/g, "");
-    if (phoneDigits.trim()) {
-      if (digitsOnly.length < 6 || digitsOnly.length > 14) {
-        e.whatsapp = "That doesn't look like a complete phone number";
-      }
+    if (!phoneDigits.trim()) {
+      e.whatsapp = "Please enter your phone number";
+    } else if (digitsOnly.length < 6 || digitsOnly.length > 14) {
+      e.whatsapp = "That doesn't look like a complete phone number";
     }
+    if (!form.role.trim()) e.role = "Please tell us your current role";
+    if (!form.income.trim()) e.income = "Please pick your income range";
+    if (!form.painPoint.trim()) e.painPoint = "Please pick one";
     return e;
   };
 
@@ -159,7 +162,7 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              WhatsApp / phone <span className="text-slate-400 font-normal">(optional)</span>
+              WhatsApp / phone *
             </label>
             <div className="flex gap-2">
               <select
@@ -209,47 +212,71 @@ export default function LeadCapture({ score, level, onSubmit, onSkip }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Monthly income <span className="text-slate-400 font-normal">(optional)</span>
+              Monthly income *
             </label>
             <select
               value={form.income}
-              onChange={(e) => setForm({ ...form, income: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors text-slate-700"
+              onChange={(e) => {
+                setForm({ ...form, income: e.target.value });
+                if (errors.income) setErrors({ ...errors, income: undefined });
+              }}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors text-slate-700 ${
+                errors.income
+                  ? "border-red-300 focus:border-red-400"
+                  : "border-slate-200 focus:border-indigo-400"
+              }`}
             >
               <option value="">Select</option>
               {INCOME_RANGES.map((r) => (
                 <option key={r} value={r}>{r}</option>
               ))}
             </select>
+            {errors.income && <p className="text-red-500 text-xs mt-1">{errors.income}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Current role <span className="text-slate-400 font-normal">(optional)</span>
+              Current role *
             </label>
             <input
               type="text"
               placeholder="e.g. Marketing Coordinator, Software Engineer"
               value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors"
+              onChange={(e) => {
+                setForm({ ...form, role: e.target.value });
+                if (errors.role) setErrors({ ...errors, role: undefined });
+              }}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors ${
+                errors.role
+                  ? "border-red-300 focus:border-red-400"
+                  : "border-slate-200 focus:border-indigo-400"
+              }`}
             />
+            {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              What brought you here? <span className="text-slate-400 font-normal">(optional)</span>
+              What brought you here? *
             </label>
             <select
               value={form.painPoint}
-              onChange={(e) => setForm({ ...form, painPoint: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-sm focus:outline-none focus:border-indigo-400 transition-colors text-slate-700"
+              onChange={(e) => {
+                setForm({ ...form, painPoint: e.target.value });
+                if (errors.painPoint) setErrors({ ...errors, painPoint: undefined });
+              }}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-white text-sm focus:outline-none transition-colors text-slate-700 ${
+                errors.painPoint
+                  ? "border-red-300 focus:border-red-400"
+                  : "border-slate-200 focus:border-indigo-400"
+              }`}
             >
               <option value="">Select one</option>
               {PAIN_POINTS.map((p) => (
                 <option key={p} value={p}>{p}</option>
               ))}
             </select>
+            {errors.painPoint && <p className="text-red-500 text-xs mt-1">{errors.painPoint}</p>}
           </div>
 
           <button
